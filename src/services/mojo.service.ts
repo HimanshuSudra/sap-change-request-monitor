@@ -13,8 +13,13 @@ type MojoFetchResult = { success: true; data: MojoDetails } | { success: false; 
 function buildMojoTicketUrl(baseUrl: string, ticketNumber: string): string {
   const normalizedBase = baseUrl.replace(/\/$/, "");
 
+  if (normalizedBase.includes("support.gulbrandsen.com")) {
+    const origin = normalizedBase.replace(/\/api\/v2\/tickets$/i, "");
+    return `${origin}/mc/tickets/${encodeURIComponent(ticketNumber)}`;
+  }
+
   if (normalizedBase.includes("/api/v2/tickets")) {
-    return normalizedBase.replace(/\/api\/v2\/tickets$/i, `/tickets/${encodeURIComponent(ticketNumber)}`);
+    return normalizedBase.replace(/\/api\/v2\/tickets$/i, `/mc/tickets/${encodeURIComponent(ticketNumber)}`);
   }
 
   return `${normalizedBase}/${encodeURIComponent(ticketNumber)}`;
@@ -49,11 +54,7 @@ export async function fetchMojoTicket(requestNumber: string): Promise<MojoFetchR
 
     const json = await res.json();
     const ticketTitle = stripHtml(json.title || json.subject || "");
-    const ticketBody = stripHtml(json.description || "");
-    const requestDescription = [ticketTitle, ticketBody]
-      .filter(Boolean)
-      .filter((value, index, arr) => arr.indexOf(value) === index)
-      .join("\n\n");
+    const requestDescription = ticketTitle;
     const mojoTicketUrl = buildMojoTicketUrl(BASE_URL, cleanNumber);
 
     // Extract requester name from various possible response shapes
