@@ -7,6 +7,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useCreateRecord, useUpdateRecord, useMojoFetch, useFilterOptions } from "@/hooks/useRecords";
+import { useRecords } from "@/hooks/useRecords";
 import { ChangeRecordDto, ChangeRecordFormData } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -139,6 +140,7 @@ export function RecordForm({ mode, record }: RecordFormProps) {
   const isEdit = mode === "edit";
   const isPending = createMutation.isPending || updateMutation.isPending;
   const currentYear = String(new Date().getFullYear());
+  const { data: yearRecords } = useRecords({ year: currentYear });
 
   const {
     register,
@@ -221,6 +223,22 @@ export function RecordForm({ mode, record }: RecordFormProps) {
   const types = filterOptions?.typeOfRequest ?? [];
   const statuses = filterOptions?.status ?? [];
   const moveTos = filterOptions?.moveTo ?? [];
+  const nextSerialNumber = isEdit
+    ? record?.serialNumber ?? "—"
+    : (() => {
+        const maxCounter = (yearRecords?.records ?? []).reduce((max, item) => {
+          const serial = item.serialNumber?.trim();
+          if (!serial) return max;
+
+          const match = serial.match(new RegExp(`^${currentYear}-(\\d+)$`));
+          if (!match) return max;
+
+          const parsed = Number.parseInt(match[1], 10);
+          return Number.isFinite(parsed) ? Math.max(max, parsed) : max;
+        }, 0);
+
+        return `${currentYear}-${String(maxCounter + 1).padStart(3, "0")}`;
+      })();
 
   return (
     <div className="max-w-4xl">
@@ -259,7 +277,12 @@ export function RecordForm({ mode, record }: RecordFormProps) {
             </FormField>
 
             <FormField label="Serial Number" hint="optional" error={errors.serialNumber?.message}>
-              <Input {...register("serialNumber")} placeholder="e.g. 2024-001" className="h-9 text-xs" />
+              <Input
+                value={nextSerialNumber}
+                readOnly
+                placeholder="Auto-generated"
+                className="h-9 text-xs"
+              />
             </FormField>
 
             <FormField label="Type of Request" required error={errors.typeOfRequest?.message}>

@@ -36,6 +36,33 @@ function tally(map: Record<string, number>, key: unknown): void {
   map[k] = (map[k] ?? 0) + 1;
 }
 
+async function getNextSerialNumber(tx: Prisma.TransactionClient, year: string): Promise<string> {
+  const existing = await tx.changeRecord.findMany({
+    where: {
+      year,
+      serialNumber: {
+        not: null,
+      },
+    },
+    select: {
+      serialNumber: true,
+    },
+  });
+
+  const maxCounter = existing.reduce((max, record) => {
+    const serial = record.serialNumber?.trim();
+    if (!serial) return max;
+
+    const match = serial.match(new RegExp(`^${year}-(\\d+)$`));
+    if (!match) return max;
+
+    const nextValue = Number.parseInt(match[1], 10);
+    return Number.isFinite(nextValue) ? Math.max(max, nextValue) : max;
+  }, 0);
+
+  return `${year}-${String(maxCounter + 1).padStart(3, "0")}`;
+}
+
 // ── BUILD PRISMA DATA FROM FORM PAYLOAD ───────────────────────────
 
 function buildRecordData(payload: ChangeRecordFormData): Prisma.ChangeRecordCreateInput {
@@ -127,16 +154,21 @@ export async function getRecordById(id: string): Promise<ChangeRecordDto | null>
 
 /** Create a new record — returns the created DTO */
 export async function createRecord(payload: ChangeRecordFormData): Promise<ChangeRecordDto> {
-  const data = buildRecordData(payload);
-  const record = await prisma.changeRecord.create({ data });
+  const record = await prisma.$transaction(async (tx) => {
+    const data = buildRecordData(payload);
+    data.serialNumber = await getNextSerialNumber(tx, payload.year);
 
-  // Write audit log
-  await prisma.auditLog.create({
-    data: {
-      action: "CREATE",
-      recordId: record.id,
-      after: record as unknown as Prisma.InputJsonValue,
-    },
+    const createdRecord = await tx.changeRecord.create({ data });
+
+    await tx.auditLog.create({
+      data: {
+        action: "CREATE",
+        recordId: createdRecord.id,
+        after: createdRecord as unknown as Prisma.InputJsonValue,
+      },
+    });
+
+    return createdRecord;
   });
 
   return toDto(record);
