@@ -4,10 +4,11 @@
 import { useState, useCallback } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
-import { Menu, Search, RefreshCw, Moon, Sun, Palette } from "lucide-react";
+import { Menu, Search, RefreshCw, Moon, Sun, Palette, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { useTheme, type ThemeName } from "@/components/ThemeProvider";
+import { signOut, useSession } from "next-auth/react";
 
 const PAGE_META: Record<string, { title: string; sub: string }> = {
   "/dashboard": {
@@ -36,6 +37,7 @@ export function Topbar({ onMenuClick }: TopbarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const qc = useQueryClient();
+  const { data: session } = useSession();
   const { theme, mode, setTheme, toggleMode } = useTheme();
   const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState("");
@@ -166,6 +168,16 @@ export function Topbar({ onMenuClick }: TopbarProps) {
           <RefreshCw
             className={cn("h-3.5 w-3.5", refreshing && "animate-spin")}
           />
+        </button>
+
+        <button
+          type="button"
+          onClick={() => signOut({ callbackUrl: "/login" })}
+          className="surface-panel-strong theme-text-muted hidden h-10 items-center gap-2 rounded-2xl px-3 text-xs font-medium transition-colors hover:text-foreground lg:flex"
+          title={session?.user?.email ?? "Sign out"}
+        >
+          <LogOut className="h-3.5 w-3.5" />
+          <span className="max-w-40 truncate">{session?.user?.email ?? "Sign out"}</span>
         </button>
       </div>
     </header>

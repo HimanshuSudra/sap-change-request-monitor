@@ -7,22 +7,13 @@ import { MojoDetails } from "@/types";
 
 const BASE_URL = process.env.MOJO_API_BASE_URL;
 const ACCESS_KEY = process.env.MOJO_API_TOKEN;
+const PORTAL_BASE_URL = process.env.MOJO_PORTAL_BASE_URL ?? "https://support.gulbrandsen.com";
 
 type MojoFetchResult = { success: true; data: MojoDetails } | { success: false; message: string };
 
 function buildMojoTicketUrl(baseUrl: string, ticketNumber: string): string {
-  const normalizedBase = baseUrl.replace(/\/$/, "");
-
-  if (normalizedBase.includes("support.gulbrandsen.com")) {
-    const origin = normalizedBase.replace(/\/api\/v2\/tickets$/i, "");
-    return `${origin}/mc/tickets/${encodeURIComponent(ticketNumber)}`;
-  }
-
-  if (normalizedBase.includes("/api/v2/tickets")) {
-    return normalizedBase.replace(/\/api\/v2\/tickets$/i, `/mc/tickets/${encodeURIComponent(ticketNumber)}`);
-  }
-
-  return `${normalizedBase}/${encodeURIComponent(ticketNumber)}`;
+  const portalOrigin = PORTAL_BASE_URL.replace(/\/$/, "");
+  return `${portalOrigin}/mc/tickets/${encodeURIComponent(ticketNumber)}`;
 }
 
 /** Fetch ticket details from Mojo Helpdesk and return autofill data */

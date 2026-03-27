@@ -13,6 +13,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { GoogleDrivePickerButton } from "@/components/records/GoogleDrivePickerButton";
+import { GoogleDriveUploadButton } from "@/components/records/GoogleDriveUploadButton";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -409,7 +411,13 @@ export function RecordForm({ mode, record }: RecordFormProps) {
               <Input {...register("smartFormOrScript")} className="h-9 text-xs" />
             </FormField>
             <FormField label="SmartForm Backup" hint="optional">
-              <Input {...register("smartformBackup")} className="h-9 text-xs" />
+              <div className="flex gap-2">
+                <Input {...register("smartformBackup")} className="h-9 flex-1 text-xs" placeholder="Google Drive attachment link" />
+                <GoogleDriveUploadButton
+                  label="Upload SmartForm"
+                  onUpload={(url) => setValue("smartformBackup", url, { shouldDirty: true, shouldValidate: true })}
+                />
+              </div>
             </FormField>
             <FormField label="Program Backup" hint="optional">
               <Input {...register("programBackup")} className="h-9 text-xs" />
@@ -542,7 +550,10 @@ export function RecordForm({ mode, record }: RecordFormProps) {
                 )} />
             </FormField>
             <FormField label="Document Link" hint="optional" error={errors.documentLink?.message} className="sm:col-span-2">
-              <Input {...register("documentLink")} type="url" placeholder="https://drive.google.com/…" className="h-9 text-xs" />
+              <div className="flex gap-2">
+                <Input {...register("documentLink")} type="url" placeholder="https://drive.google.com/…" className="h-9 flex-1 text-xs" />
+                <GoogleDrivePickerButton onPick={(url) => setValue("documentLink", url, { shouldValidate: true, shouldDirty: true })} />
+              </div>
             </FormField>
             <FormField label="Production Backup Link" hint="optional" error={errors.productionBackupLink?.message} className="sm:col-span-2">
               <Input {...register("productionBackupLink")} type="url" placeholder="https://…" className="h-9 text-xs" />

@@ -2,14 +2,20 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const pathname = usePathname();
+
+  if (pathname.startsWith("/login")) {
+    return <>{children}</>;
+  }
 
   return (
-    <div className="app-noise relative flex h-screen overflow-hidden bg-slate-100">
+    <div className="app-noise relative flex h-screen overflow-hidden bg-background">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="orb-layer left-[15%] top-[-3rem] h-44 w-44 bg-cyan-300/25" />
         <div className="orb-layer right-[12%] top-[7rem] h-64 w-64 bg-blue-400/20" style={{ animationDelay: "-4s" }} />
