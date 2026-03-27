@@ -33,6 +33,7 @@ const schema = z.object({
   status:              z.string().min(1, "Status is required"),
   serialNumber:               z.string().max(30).optional(),
   requestNumber:              z.string().max(30).optional(),
+  mojoTicketUrl:              z.string().url("Must be a valid URL").or(z.literal("")).optional(),
   developmentTaskOrReportName:z.string().optional(),
   tCode:                      z.string().max(20).optional(),
   programName:                z.string().max(50).optional(),
@@ -157,6 +158,7 @@ export function RecordForm({ mode, record }: RecordFormProps) {
           serialNumber: record.serialNumber ?? "",
           typeOfRequest: record.typeOfRequest ?? "",
           requestNumber: record.requestNumber ?? "",
+          mojoTicketUrl: record.mojoTicketUrl ?? "",
           requestDescription: record.requestDescription ?? "",
           developmentTaskOrReportName: record.developmentTaskOrReportName ?? "",
           tCode: record.tCode ?? "",
@@ -193,6 +195,7 @@ export function RecordForm({ mode, record }: RecordFormProps) {
   const descValue = watch("requestDescription") ?? "";
   const remarksValue = watch("remarks") ?? "";
   const requestNumberValue = watch("requestNumber") ?? "";
+  const mojoTicketUrlValue = watch("mojoTicketUrl") ?? "";
 
   // Mojo autofill
   async function handleMojoFetch() {
@@ -204,6 +207,7 @@ export function RecordForm({ mode, record }: RecordFormProps) {
     const result = await mojoMutation.mutateAsync(reqNo);
     if (result.requestDescription) setValue("requestDescription", result.requestDescription);
     if (result.requester) setValue("requester", result.requester);
+    if (result.mojoTicketUrl) setValue("mojoTicketUrl", result.mojoTicketUrl);
     toast.success("Mojo details fetched successfully");
   }
 
@@ -332,6 +336,36 @@ export function RecordForm({ mode, record }: RecordFormProps) {
               <p className="theme-text-soft text-[10px]">
                 Enter a valid Mojo ticket number. This works only after Mojo API URL and token are configured.
               </p>
+            </FormField>
+
+            <FormField label="Mojo Ticket Link" hint="auto-filled" error={errors.mojoTicketUrl?.message}>
+              <div className="flex gap-2">
+                <Input
+                  value={mojoTicketUrlValue}
+                  readOnly
+                  placeholder="Fetch a Mojo ticket to generate a direct link"
+                  className="h-9 flex-1 text-xs"
+                />
+                <Button
+                  asChild
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="h-9 text-xs"
+                  disabled={!mojoTicketUrlValue}
+                >
+                  <a
+                    href={mojoTicketUrlValue || "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => {
+                      if (!mojoTicketUrlValue) e.preventDefault();
+                    }}
+                  >
+                    Open
+                  </a>
+                </Button>
+              </div>
             </FormField>
 
             <FormField

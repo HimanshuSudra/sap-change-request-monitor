@@ -71,6 +71,7 @@ function buildRecordData(payload: ChangeRecordFormData): Prisma.ChangeRecordCrea
     serialNumber: payload.serialNumber || null,
     typeOfRequest: payload.typeOfRequest,
     requestNumber: payload.requestNumber || null,
+    mojoTicketUrl: payload.mojoTicketUrl || null,
     requestDescription: payload.requestDescription,
     developmentTaskOrReportName: payload.developmentTaskOrReportName || null,
     tCode: payload.tCode || null,

@@ -35,12 +35,12 @@ function Field({
 }) {
   return (
     <div className={cn("flex flex-col gap-0.5", className)}>
-      <dt className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+      <dt className="theme-text-soft text-[10px] font-semibold uppercase tracking-wider">
         {label}
       </dt>
       <dd>
         {!value || value.trim() === "" ? (
-          <span className="text-xs text-slate-300">Not specified</span>
+          <span className="theme-text-faint text-xs">Not specified</span>
         ) : badge ? (
           <StatusBadge value={value} />
         ) : link ? (
@@ -54,11 +54,11 @@ function Field({
             {value.length > 55 ? value.slice(0, 55) + "…" : value}
           </a>
         ) : mono ? (
-          <code className="rounded bg-slate-100 px-1.5 py-0.5 text-[11px] font-mono text-slate-700">
+          <code className="rounded bg-muted px-1.5 py-0.5 text-[11px] font-mono text-foreground">
             {value}
           </code>
         ) : (
-          <span className="text-xs text-slate-700 whitespace-pre-wrap">{value}</span>
+          <span className="text-xs whitespace-pre-wrap text-foreground">{value}</span>
         )}
       </dd>
     </div>
@@ -67,7 +67,7 @@ function Field({
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h3 className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-slate-500 border-b border-slate-100 pb-1.5">
+    <h3 className="theme-text-muted mb-3 border-b border-border pb-1.5 text-[11px] font-semibold uppercase tracking-wider">
       {children}
     </h3>
   );
@@ -83,7 +83,7 @@ export function RecordDetailSheet({ record, onClose, onEdit, onDelete }: Props) 
           <SheetTitle className="text-base">
             Record #{record.serialNumber || record.id.slice(0, 8)}
           </SheetTitle>
-          <p className="text-xs text-slate-500">
+          <p className="theme-text-muted text-xs">
             {record.typeOfRequest}
             {record.year ? ` · ${record.year}` : ""}
           </p>
@@ -98,6 +98,7 @@ export function RecordDetailSheet({ record, onClose, onEdit, onDelete }: Props) 
               <Field label="Year" value={record.year} />
               <Field label="Type of Request" value={record.typeOfRequest} badge />
               <Field label="Request Number" value={record.requestNumber} mono />
+              <Field label="Mojo Ticket Link" value={record.mojoTicketUrl} link />
               <Field label="Status" value={record.status} badge />
               <Field label="Requester" value={record.requester} />
               <div className="col-span-2">
@@ -166,7 +167,7 @@ export function RecordDetailSheet({ record, onClose, onEdit, onDelete }: Props) 
               <Separator />
               <div>
                 <SectionTitle>Remarks</SectionTitle>
-                <p className="text-xs text-slate-700 leading-relaxed whitespace-pre-wrap">
+                <p className="text-xs leading-relaxed whitespace-pre-wrap text-foreground">
                   {record.remarks}
                 </p>
               </div>
@@ -176,9 +177,9 @@ export function RecordDetailSheet({ record, onClose, onEdit, onDelete }: Props) 
           <Separator />
 
           {/* Metadata */}
-          <div className="flex flex-wrap gap-4 text-[10px] text-slate-400">
+          <div className="theme-text-soft flex flex-wrap gap-4 text-[10px]">
             <span>
-              ID: <code className="font-mono text-[10px] text-slate-500">{record.id}</code>
+              ID: <code className="theme-text-muted font-mono text-[10px]">{record.id}</code>
             </span>
             <span>
               Created:{" "}
@@ -203,7 +204,7 @@ export function RecordDetailSheet({ record, onClose, onEdit, onDelete }: Props) 
           </div>
         </div>
 
-        <SheetFooter className="flex-row gap-2 border-t border-slate-100 pt-4">
+        <SheetFooter className="flex-row gap-2 border-t border-border pt-4">
           <Button variant="outline" onClick={onClose}>
             Close
           </Button>

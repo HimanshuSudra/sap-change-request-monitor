@@ -22,6 +22,7 @@ export interface ChangeRecordDto {
   serialNumber: string | null;
   typeOfRequest: string;
   requestNumber: string | null;
+  mojoTicketUrl: string | null;
   requestDescription: string;
   developmentTaskOrReportName: string | null;
 
@@ -61,6 +62,7 @@ export interface ChangeRecordFormData {
   serialNumber?: string;
   typeOfRequest: string;
   requestNumber?: string;
+  mojoTicketUrl?: string;
   requestDescription: string;
   developmentTaskOrReportName?: string;
   tCode?: string;
@@ -148,8 +150,10 @@ export interface RecordListParams {
 
 // ── Mojo autofill response ────────────────────────────────────────
 export interface MojoDetails {
+  ticketTitle: string;
   requestDescription: string;
   requester: string;
+  mojoTicketUrl: string;
 }
 
 // ── Setting ───────────────────────────────────────────────────────

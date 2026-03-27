@@ -14,6 +14,7 @@ const CreateRecordSchema = z.object({
 
   serialNumber: z.string().max(30).optional(),
   requestNumber: z.string().max(30).optional(),
+  mojoTicketUrl: z.string().url().optional().or(z.literal("")),
   developmentTaskOrReportName: z.string().optional(),
   tCode: z.string().max(20).optional(),
   programName: z.string().max(50).optional(),

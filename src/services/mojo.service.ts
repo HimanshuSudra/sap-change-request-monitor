@@ -10,6 +10,16 @@ const ACCESS_KEY = process.env.MOJO_API_TOKEN;
 
 type MojoFetchResult = { success: true; data: MojoDetails } | { success: false; message: string };
 
+function buildMojoTicketUrl(baseUrl: string, ticketNumber: string): string {
+  const normalizedBase = baseUrl.replace(/\/$/, "");
+
+  if (normalizedBase.includes("/api/v2/tickets")) {
+    return normalizedBase.replace(/\/api\/v2\/tickets$/i, `/tickets/${encodeURIComponent(ticketNumber)}`);
+  }
+
+  return `${normalizedBase}/${encodeURIComponent(ticketNumber)}`;
+}
+
 /** Fetch ticket details from Mojo Helpdesk and return autofill data */
 export async function fetchMojoTicket(requestNumber: string): Promise<MojoFetchResult> {
   if (!BASE_URL) {
@@ -38,7 +48,13 @@ export async function fetchMojoTicket(requestNumber: string): Promise<MojoFetchR
     }
 
     const json = await res.json();
-    const description = json.description || json.title || "";
+    const ticketTitle = stripHtml(json.title || json.subject || "");
+    const ticketBody = stripHtml(json.description || "");
+    const requestDescription = [ticketTitle, ticketBody]
+      .filter(Boolean)
+      .filter((value, index, arr) => arr.indexOf(value) === index)
+      .join("\n\n");
+    const mojoTicketUrl = buildMojoTicketUrl(BASE_URL, cleanNumber);
 
     // Extract requester name from various possible response shapes
     let requester = "";
@@ -54,8 +70,10 @@ export async function fetchMojoTicket(requestNumber: string): Promise<MojoFetchR
     return {
       success: true,
       data: {
-        requestDescription: stripHtml(description),
+        ticketTitle,
+        requestDescription,
         requester,
+        mojoTicketUrl,
       },
     };
   } catch (err) {

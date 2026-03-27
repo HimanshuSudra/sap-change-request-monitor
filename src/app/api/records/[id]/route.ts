@@ -11,6 +11,7 @@ const UpdateRecordSchema = z.object({
   status: z.string().min(1, "Status is required").optional(),
   serialNumber: z.string().max(30).optional().nullable(),
   requestNumber: z.string().max(30).optional().nullable(),
+  mojoTicketUrl: z.string().url().or(z.literal("")).optional().nullable(),
   developmentTaskOrReportName: z.string().optional().nullable(),
   tCode: z.string().max(20).optional().nullable(),
   programName: z.string().max(50).optional().nullable(),

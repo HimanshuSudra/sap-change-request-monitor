@@ -43,6 +43,7 @@ model ChangeRecord {
   serialNumber     String?  // e.g. "2024-001"
   typeOfRequest    String   // from Settings
   requestNumber    String?  // Mojo ticket number e.g. "REQ-12345"
+  mojoTicketUrl    String?
   requestDescription          String  @db.Text
   developmentTaskOrReportName String?
 
