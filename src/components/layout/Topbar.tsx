@@ -79,7 +79,7 @@ export function Topbar({ onMenuClick }: TopbarProps) {
     <header className="glass-panel relative z-10 mx-4 mt-4 flex h-16 flex-shrink-0 items-center gap-4 rounded-3xl border-white/40 px-4 md:mx-6 md:px-6">
       {/* Mobile hamburger */}
       <button
-        className="text-slate-500 hover:text-slate-700 lg:hidden"
+        className="theme-text-muted hover:text-foreground lg:hidden"
         onClick={onMenuClick}
       >
         <Menu className="h-5 w-5" />
@@ -87,11 +87,11 @@ export function Topbar({ onMenuClick }: TopbarProps) {
 
       {/* Page title */}
       <div className="min-w-0 flex-1">
-        <h1 className="truncate text-base font-semibold leading-tight text-slate-900">
+        <h1 className="truncate text-base font-semibold leading-tight text-foreground">
           {meta.title}
         </h1>
         {meta.sub && (
-          <p className="hidden truncate text-xs leading-tight text-slate-500 sm:block">
+          <p className="theme-text-muted hidden truncate text-xs leading-tight sm:block">
             {meta.sub}
           </p>
         )}
@@ -103,7 +103,7 @@ export function Topbar({ onMenuClick }: TopbarProps) {
           <button
             type="button"
             onClick={() => setThemeMenuOpen((open) => !open)}
-            className="flex h-10 items-center gap-2 rounded-2xl border border-white/60 bg-white/70 px-3 text-xs font-medium text-slate-600 transition-colors hover:bg-white"
+            className="surface-panel-strong theme-text-muted flex h-10 items-center gap-2 rounded-2xl px-3 text-xs font-medium transition-colors hover:text-foreground"
           >
             <Palette className="h-3.5 w-3.5" />
             {themes.find((item) => item.value === theme)?.label}
@@ -121,8 +121,8 @@ export function Topbar({ onMenuClick }: TopbarProps) {
                   className={cn(
                     "flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-xs transition-colors",
                     theme === item.value
-                      ? "bg-slate-900 text-white"
-                      : "text-slate-600 hover:bg-slate-100"
+                      ? "bg-primary text-primary-foreground"
+                      : "theme-text-muted hover:bg-accent hover:text-accent-foreground"
                   )}
                 >
                   <span>{item.label}</span>
@@ -136,7 +136,7 @@ export function Topbar({ onMenuClick }: TopbarProps) {
         <button
           type="button"
           onClick={toggleMode}
-          className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/60 bg-white/70 text-slate-500 transition-colors hover:bg-white hover:text-slate-700"
+          className="surface-panel-strong theme-text-muted flex h-10 w-10 items-center justify-center rounded-2xl transition-colors hover:text-foreground"
           title={mode === "light" ? "Switch to dark mode" : "Switch to light mode"}
         >
           {mode === "light" ? <Moon className="h-3.5 w-3.5" /> : <Sun className="h-3.5 w-3.5" />}
@@ -145,13 +145,13 @@ export function Topbar({ onMenuClick }: TopbarProps) {
         {/* Global quick search */}
         <form onSubmit={handleSearch} className="hidden md:block">
           <div className="relative">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 pointer-events-none" />
+            <Search className="theme-text-soft pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Quick search…"
-              className="h-10 w-56 rounded-2xl border border-white/60 bg-white/70 pl-8 pr-3 text-xs text-slate-900 placeholder:text-slate-400 shadow-inner transition-all focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              className="theme-field h-10 w-56 rounded-2xl border pl-8 pr-3 text-xs shadow-inner transition-all focus:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
           </div>
         </form>
@@ -161,7 +161,7 @@ export function Topbar({ onMenuClick }: TopbarProps) {
           onClick={handleRefresh}
           disabled={refreshing}
           title="Refresh data"
-          className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/60 bg-white/70 text-slate-500 transition-colors hover:bg-white hover:text-slate-700 disabled:opacity-50"
+          className="surface-panel-strong theme-text-muted flex h-10 w-10 items-center justify-center rounded-2xl transition-colors hover:text-foreground disabled:opacity-50"
         >
           <RefreshCw
             className={cn("h-3.5 w-3.5", refreshing && "animate-spin")}

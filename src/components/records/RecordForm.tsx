@@ -1,14 +1,13 @@
 // src/components/records/RecordForm.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useCreateRecord, useUpdateRecord, useMojoFetch, useFilterOptions } from "@/hooks/useRecords";
 import { ChangeRecordDto, ChangeRecordFormData } from "@/types";
-import { generateYearOptions } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -74,7 +73,7 @@ function SectionHeader({
       <div className={cn("flex h-8 w-8 items-center justify-center rounded-lg", colorClass)}>
         <Icon className="h-4 w-4" />
       </div>
-      <h2 className="text-sm font-semibold text-slate-800">{title}</h2>
+      <h2 className="text-sm font-semibold text-foreground">{title}</h2>
     </div>
   );
 }
@@ -102,14 +101,14 @@ function FormField({
 }) {
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
-      <Label className="text-xs font-medium text-slate-700">
+      <Label className="text-xs font-medium text-foreground">
         {label}{" "}
         {required && <span className="text-red-500 ml-0.5">*</span>}
-        {hint && <span className="font-normal text-slate-400 ml-1">({hint})</span>}
+        {hint && <span className="theme-text-soft ml-1 font-normal">({hint})</span>}
       </Label>
       {children}
       {maxChars !== undefined && charCount !== undefined && (
-        <div className="text-right text-[10px] text-slate-400">
+        <div className="theme-text-soft text-right text-[10px]">
           {charCount} / {maxChars}
         </div>
       )}
@@ -139,6 +138,7 @@ export function RecordForm({ mode, record }: RecordFormProps) {
 
   const isEdit = mode === "edit";
   const isPending = createMutation.isPending || updateMutation.isPending;
+  const currentYear = String(new Date().getFullYear());
 
   const {
     register,
@@ -182,6 +182,12 @@ export function RecordForm({ mode, record }: RecordFormProps) {
       : { year: String(new Date().getFullYear()) },
   });
 
+  useEffect(() => {
+    if (!isEdit) {
+      setValue("year", currentYear, { shouldValidate: true });
+    }
+  }, [currentYear, isEdit, setValue]);
+
   const descValue = watch("requestDescription") ?? "";
   const remarksValue = watch("remarks") ?? "";
   const requestNumberValue = watch("requestNumber") ?? "";
@@ -212,7 +218,6 @@ export function RecordForm({ mode, record }: RecordFormProps) {
     }
   }
 
-  const years = generateYearOptions();
   const types = filterOptions?.typeOfRequest ?? [];
   const statuses = filterOptions?.status ?? [];
   const moveTos = filterOptions?.moveTo ?? [];
@@ -227,8 +232,8 @@ export function RecordForm({ mode, record }: RecordFormProps) {
             Back
           </Link>
         </Button>
-        <span className="text-slate-300">/</span>
-        <span className="text-sm font-medium text-slate-700">
+        <span className="theme-text-faint">/</span>
+        <span className="text-sm font-medium text-foreground">
           {isEdit ? `Edit Record #${record?.serialNumber || record?.id.slice(0, 8)}` : "New Request"}
         </span>
       </div>
@@ -236,7 +241,7 @@ export function RecordForm({ mode, record }: RecordFormProps) {
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
 
         {/* ── Section 1: Request Information ──────────── */}
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="surface-panel rounded-xl p-6">
           <SectionHeader icon={Info} title="Request Information" colorClass="bg-blue-50 text-blue-600" />
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <FormField label="Year" required error={errors.year?.message}>
@@ -244,14 +249,11 @@ export function RecordForm({ mode, record }: RecordFormProps) {
                 name="year"
                 control={control}
                 render={({ field }) => (
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger className={cn("h-9 text-xs", errors.year && "border-red-400")}>
-                      <SelectValue placeholder="Select year…" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {years.map((y) => <SelectItem key={y} value={y}>{y}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
+                  <Input
+                    value={field.value || currentYear}
+                    readOnly
+                    className={cn("h-9 text-xs", errors.year && "border-red-400")}
+                  />
                 )}
               />
             </FormField>
@@ -304,8 +306,8 @@ export function RecordForm({ mode, record }: RecordFormProps) {
                   Fetch
                 </Button>
               </div>
-              <p className="text-[10px] text-slate-400">
-                Enter Mojo ticket number and click Fetch to auto-fill description & requester.
+              <p className="theme-text-soft text-[10px]">
+                Enter a valid Mojo ticket number. This works only after Mojo API URL and token are configured.
               </p>
             </FormField>
 
@@ -337,7 +339,7 @@ export function RecordForm({ mode, record }: RecordFormProps) {
         </div>
 
         {/* ── Section 2: Technical Details ─────────────── */}
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="surface-panel rounded-xl p-6">
           <SectionHeader icon={Code} title="Technical Details" colorClass="bg-violet-50 text-violet-600" />
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <FormField label="T-Code" hint="optional">
@@ -359,7 +361,7 @@ export function RecordForm({ mode, record }: RecordFormProps) {
         </div>
 
         {/* ── Section 3: Transport Request ─────────────── */}
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="surface-panel rounded-xl p-6">
           <SectionHeader icon={ArrowLeftRight} title="Transport Request" colorClass="bg-cyan-50 text-cyan-600" />
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <FormField label="TR Number" hint="optional">
@@ -419,7 +421,7 @@ export function RecordForm({ mode, record }: RecordFormProps) {
         </div>
 
         {/* ── Section 4: Documentation & Verification ──── */}
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="surface-panel rounded-xl p-6">
           <SectionHeader icon={FileText} title="Documentation & Verification" colorClass="bg-amber-50 text-amber-600" />
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <FormField label="Requester" hint="optional">
@@ -492,7 +494,7 @@ export function RecordForm({ mode, record }: RecordFormProps) {
         </div>
 
         {/* ── Section 5: Status & Remarks ──────────────── */}
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="surface-panel rounded-xl p-6">
           <SectionHeader icon={CheckCircle} title="Status & Remarks" colorClass="bg-green-50 text-green-600" />
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <FormField label="Status" required error={errors.status?.message}>
@@ -528,7 +530,7 @@ export function RecordForm({ mode, record }: RecordFormProps) {
         </div>
 
         {/* ── Sticky Footer ─────────────────────────────── */}
-        <div className="sticky bottom-0 z-10 flex items-center justify-end gap-3 rounded-xl border border-slate-200 bg-white px-6 py-4 shadow-lg">
+        <div className="surface-panel-strong sticky bottom-0 z-10 flex items-center justify-end gap-3 rounded-xl px-6 py-4 shadow-lg backdrop-blur-md">
           <Button asChild variant="outline" size="sm" className="text-xs" disabled={isPending}>
             <Link href="/records">Cancel</Link>
           </Button>

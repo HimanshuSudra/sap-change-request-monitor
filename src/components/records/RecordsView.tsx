@@ -44,7 +44,7 @@ function buildColumns(
       header: "Serial #",
       size: 90,
       cell: ({ getValue }) => (
-        <span className="text-xs text-slate-500">{getValue() as string || "—"}</span>
+        <span className="theme-text-muted text-xs">{getValue() as string || "—"}</span>
       ),
     },
     {
@@ -52,7 +52,7 @@ function buildColumns(
       header: "Year",
       size: 70,
       cell: ({ getValue }) => (
-        <span className="text-xs font-medium text-slate-600">{getValue() as string}</span>
+        <span className="theme-text-muted text-xs font-medium">{getValue() as string}</span>
       ),
     },
     {
@@ -61,7 +61,7 @@ function buildColumns(
       size: 130,
       cell: ({ getValue }) => {
         const v = getValue() as string;
-        return v ? <StatusBadge value={v} /> : <span className="text-slate-300">—</span>;
+        return v ? <StatusBadge value={v} /> : <span className="theme-text-faint">—</span>;
       },
     },
     {
@@ -71,11 +71,11 @@ function buildColumns(
       cell: ({ getValue }) => {
         const v = getValue() as string;
         return v ? (
-          <code className="rounded bg-slate-100 px-1 py-0.5 text-[11px] font-mono text-slate-700">
+          <code className="rounded bg-muted px-1 py-0.5 text-[11px] font-mono text-foreground">
             {v}
           </code>
         ) : (
-          <span className="text-slate-300">—</span>
+          <span className="theme-text-faint">—</span>
         );
       },
     },
@@ -86,7 +86,7 @@ function buildColumns(
       cell: ({ getValue }) => {
         const v = getValue() as string;
         return (
-          <span className="text-xs text-slate-700" title={v}>
+          <span className="text-xs text-foreground" title={v}>
             {truncate(v, 60)}
           </span>
         );
@@ -99,11 +99,11 @@ function buildColumns(
       cell: ({ getValue }) => {
         const v = getValue() as string;
         return v ? (
-          <code className="rounded bg-slate-100 px-1 py-0.5 text-[11px] font-mono text-slate-600">
+          <code className="rounded bg-muted px-1 py-0.5 text-[11px] font-mono theme-text-muted">
             {v}
           </code>
         ) : (
-          <span className="text-slate-300">—</span>
+          <span className="theme-text-faint">—</span>
         );
       },
     },
@@ -113,7 +113,7 @@ function buildColumns(
       size: 120,
       cell: ({ getValue }) => {
         const v = getValue() as string;
-        return v ? <StatusBadge value={v} /> : <span className="text-slate-300">—</span>;
+        return v ? <StatusBadge value={v} /> : <span className="theme-text-faint">—</span>;
       },
     },
     {
@@ -121,7 +121,7 @@ function buildColumns(
       header: "Requester",
       size: 110,
       cell: ({ getValue }) => (
-        <span className="text-xs text-slate-600">{(getValue() as string) || "—"}</span>
+        <span className="theme-text-muted text-xs">{(getValue() as string) || "—"}</span>
       ),
     },
     {
@@ -131,11 +131,11 @@ function buildColumns(
       cell: ({ getValue }) => {
         const v = getValue() as string;
         return v ? (
-          <code className="rounded bg-slate-100 px-1 py-0.5 text-[11px] font-mono text-slate-600">
+          <code className="rounded bg-muted px-1 py-0.5 text-[11px] font-mono theme-text-muted">
             {v}
           </code>
         ) : (
-          <span className="text-slate-300">—</span>
+          <span className="theme-text-faint">—</span>
         );
       },
     },
@@ -144,7 +144,7 @@ function buildColumns(
       header: "Moved By",
       size: 95,
       cell: ({ getValue }) => (
-        <span className="text-xs text-slate-600">{(getValue() as string) || "—"}</span>
+        <span className="theme-text-muted text-xs">{(getValue() as string) || "—"}</span>
       ),
     },
     {
@@ -152,7 +152,7 @@ function buildColumns(
       header: "Moved Date",
       size: 110,
       cell: ({ getValue }) => (
-        <span className="text-xs text-slate-500">{fmtDate(getValue() as string)}</span>
+        <span className="theme-text-muted text-xs">{fmtDate(getValue() as string)}</span>
       ),
     },
     {
@@ -167,21 +167,21 @@ function buildColumns(
             <button
               onClick={() => onView(r)}
               title="View"
-              className="rounded p-1 text-slate-400 hover:bg-slate-100 hover:text-blue-600 transition-colors"
+              className="theme-text-soft rounded p-1 transition-colors hover:bg-accent hover:text-primary"
             >
               <Eye className="h-3.5 w-3.5" />
             </button>
             <button
               onClick={() => onEdit(r.id)}
               title="Edit"
-              className="rounded p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+              className="theme-text-soft rounded p-1 transition-colors hover:bg-accent hover:text-foreground"
             >
               <Pencil className="h-3.5 w-3.5" />
             </button>
             <button
               onClick={() => onDelete(r)}
               title="Delete"
-              className="rounded p-1 text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors"
+              className="theme-text-soft rounded p-1 transition-colors hover:bg-red-500/10 hover:text-red-600"
             >
               <Trash2 className="h-3.5 w-3.5" />
             </button>
@@ -311,7 +311,7 @@ export function RecordsView() {
       <div className="mb-4 flex flex-wrap items-center gap-2">
         {/* Search */}
         <div className="relative flex-1 min-w-[200px] max-w-xs">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 pointer-events-none" />
+          <Search className="theme-text-soft pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2" />
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -369,7 +369,7 @@ export function RecordsView() {
         </Select>
 
         <div className="ml-auto flex items-center gap-2">
-          <span className="text-xs text-slate-500 hidden sm:block">
+          <span className="theme-text-muted hidden text-xs sm:block">
             {totalRows.toLocaleString()} record{totalRows !== 1 ? "s" : ""}
           </span>
           <Button variant="outline" size="sm" onClick={exportCSV} className="h-9 gap-1.5 text-xs">
@@ -392,7 +392,7 @@ export function RecordsView() {
             <button
               key={i}
               onClick={f.clear}
-              className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-[11px] font-medium text-blue-700 hover:bg-blue-100 transition-colors"
+              className="inline-flex items-center gap-1 rounded-full border border-primary/20 bg-primary/10 px-2.5 py-1 text-[11px] font-medium text-primary transition-colors hover:bg-primary/15"
             >
               {f.label}
               <X className="h-3 w-3" />
@@ -400,7 +400,7 @@ export function RecordsView() {
           ))}
           <button
             onClick={clearAllFilters}
-            className="text-[11px] text-slate-400 hover:text-slate-700 underline"
+            className="theme-text-soft text-[11px] underline hover:text-foreground"
           >
             Clear all
           </button>
@@ -408,10 +408,10 @@ export function RecordsView() {
       )}
 
       {/* ── Table ─────────────────────────────────────── */}
-      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="surface-panel overflow-hidden rounded-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="border-b border-slate-200 bg-slate-50">
+            <thead className="theme-table-header border-b border-border">
               {table.getHeaderGroups().map((hg) => (
                 <tr key={hg.id}>
                   {hg.headers.map((header) => {
@@ -422,14 +422,14 @@ export function RecordsView() {
                         style={{ minWidth: header.column.getSize() }}
                         onClick={header.column.getToggleSortingHandler()}
                         className={cn(
-                          "px-3 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 whitespace-nowrap",
-                          header.column.getCanSort() && "cursor-pointer select-none hover:text-slate-700"
+                          "theme-text-muted px-3 py-3 text-left text-[11px] font-semibold uppercase tracking-wider whitespace-nowrap",
+                          header.column.getCanSort() && "cursor-pointer select-none hover:text-foreground"
                         )}
                       >
                         <div className="flex items-center gap-1">
                           {flexRender(header.column.columnDef.header, header.getContext())}
                           {header.column.getCanSort() && (
-                            <span className="text-slate-300">
+                            <span className="theme-text-faint">
                               {sorted === "asc" ? (
                                 <ChevronUp className="h-3 w-3 text-blue-500" />
                               ) : sorted === "desc" ? (
@@ -449,10 +449,10 @@ export function RecordsView() {
             <tbody>
               {isLoading ? (
                 Array.from({ length: 8 }).map((_, i) => (
-                  <tr key={i} className="border-b border-slate-100">
+                  <tr key={i} className="border-b border-border/60">
                     {columns.map((_, j) => (
                       <td key={j} className="px-3 py-3">
-                        <div className="h-3 rounded bg-slate-100 animate-pulse" />
+                        <div className="h-3 animate-pulse rounded bg-muted" />
                       </td>
                     ))}
                   </tr>
@@ -461,9 +461,9 @@ export function RecordsView() {
                 <tr>
                   <td colSpan={columns.length} className="px-6 py-16 text-center">
                     <div className="flex flex-col items-center gap-2">
-                      <FileX className="h-10 w-10 text-slate-200" />
-                      <p className="text-sm font-medium text-slate-600">No records found</p>
-                      <p className="text-xs text-slate-400">
+                      <FileX className="theme-text-faint h-10 w-10" />
+                      <p className="theme-text-muted text-sm font-medium">No records found</p>
+                      <p className="theme-text-soft text-xs">
                         Try adjusting your filters, or{" "}
                         <Link href="/records/new" className="text-blue-500 hover:underline">
                           create a new request
@@ -482,7 +482,7 @@ export function RecordsView() {
                   <tr
                     key={row.id}
                     onClick={() => setViewRecord(row.original)}
-                    className="border-b border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors"
+                    className="theme-hover-surface cursor-pointer border-b border-border/60 transition-colors"
                   >
                     {row.getVisibleCells().map((cell) => (
                       <td
@@ -506,8 +506,8 @@ export function RecordsView() {
 
         {/* ── Pagination ──────────────────────────────── */}
         {table.getPageCount() > 1 && (
-          <div className="flex items-center justify-between border-t border-slate-200 px-4 py-3">
-            <span className="text-xs text-slate-500">
+          <div className="flex items-center justify-between border-t border-border px-4 py-3">
+            <span className="theme-text-muted text-xs">
               Showing {start.toLocaleString()}–{end.toLocaleString()} of{" "}
               {totalRows.toLocaleString()}
             </span>
@@ -539,7 +539,7 @@ export function RecordsView() {
                 }
                 if (page === "…")
                   return (
-                    <span key={i} className="px-1 text-xs text-slate-400">
+                    <span key={i} className="theme-text-soft px-1 text-xs">
                       …
                     </span>
                   );
