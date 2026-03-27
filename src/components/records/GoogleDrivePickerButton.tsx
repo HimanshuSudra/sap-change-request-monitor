@@ -53,7 +53,7 @@ export function GoogleDrivePickerButton({ onPick }: Props) {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
   const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
   const appId = process.env.NEXT_PUBLIC_GOOGLE_APP_ID;
-  const isConfigured = Boolean(apiKey && clientId && appId);
+  const isConfigured = Boolean(apiKey && clientId);
 
   useEffect(() => {
     if (!isConfigured) return;
@@ -110,7 +110,7 @@ export function GoogleDrivePickerButton({ onPick }: Props) {
 
   function openPicker(token: string) {
     const picker = window.google?.picker as any;
-    if (!picker || !apiKey || !appId) {
+    if (!picker || !apiKey) {
       setOpening(false);
       toast.error("Google Drive Picker is not configured");
       return;
@@ -123,7 +123,6 @@ export function GoogleDrivePickerButton({ onPick }: Props) {
 
     new picker.PickerBuilder()
       .setDeveloperKey(apiKey)
-      .setAppId(appId)
       .setOAuthToken(token)
       .addView(view)
       .setCallback((data: Record<string, unknown>) => {
