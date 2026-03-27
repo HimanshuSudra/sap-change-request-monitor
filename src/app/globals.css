@@ -1,0 +1,270 @@
+/* src/app/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 215 40% 98%;
+    --foreground: 222.2 47.4% 11.2%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 47.4% 11.2%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 217 91% 60%;
+    --radius: 1rem;
+    --shell-base: #020817;
+    --shell-accent: #38bdf8;
+    --surface-bg:
+      radial-gradient(circle at 14% 18%, rgba(59, 130, 246, 0.10), transparent 24%),
+      radial-gradient(circle at 85% 10%, rgba(34, 211, 238, 0.14), transparent 18%),
+      linear-gradient(180deg, #f7faff 0%, #eef4fb 100%);
+    --glass-bg: rgba(255, 255, 255, 0.72);
+    --glass-border: rgba(255, 255, 255, 0.42);
+    --grid-line: rgba(148, 163, 184, 0.14);
+    --hero-badge-bg: rgba(207, 250, 254, 0.68);
+    --hero-badge-border: rgba(103, 232, 249, 0.42);
+    --hero-badge-text: rgba(22, 78, 99, 0.9);
+  }
+
+  :root[data-theme="sap"] {
+    --primary: 210 100% 45%;
+    --ring: 210 100% 45%;
+    --shell-accent: #0ea5e9;
+  }
+
+  :root[data-theme="ui5"] {
+    --primary: 208 100% 41%;
+    --ring: 208 100% 41%;
+    --shell-accent: #2563eb;
+    --surface-bg:
+      radial-gradient(circle at 10% 20%, rgba(37, 99, 235, 0.10), transparent 22%),
+      radial-gradient(circle at 84% 14%, rgba(14, 165, 233, 0.14), transparent 20%),
+      linear-gradient(180deg, #f5f9ff 0%, #e7f0fb 100%);
+  }
+
+  :root[data-theme="anime"] {
+    --primary: 329 86% 60%;
+    --ring: 329 86% 60%;
+    --shell-accent: #f472b6;
+    --surface-bg:
+      radial-gradient(circle at 12% 16%, rgba(251, 146, 60, 0.14), transparent 22%),
+      radial-gradient(circle at 86% 10%, rgba(244, 114, 182, 0.18), transparent 20%),
+      linear-gradient(180deg, #fff6fb 0%, #eef5ff 100%);
+    --hero-badge-bg: rgba(252, 231, 243, 0.8);
+    --hero-badge-border: rgba(244, 114, 182, 0.34);
+    --hero-badge-text: rgba(157, 23, 77, 0.9);
+  }
+
+  :root[data-theme="marvel"] {
+    --primary: 0 84% 52%;
+    --ring: 0 84% 52%;
+    --shell-accent: #ef4444;
+    --surface-bg:
+      radial-gradient(circle at 15% 15%, rgba(239, 68, 68, 0.12), transparent 24%),
+      radial-gradient(circle at 88% 10%, rgba(30, 41, 59, 0.22), transparent 18%),
+      linear-gradient(180deg, #fff8f7 0%, #edf2f7 100%);
+    --hero-badge-bg: rgba(254, 242, 242, 0.8);
+    --hero-badge-border: rgba(248, 113, 113, 0.34);
+    --hero-badge-text: rgba(127, 29, 29, 0.92);
+  }
+
+  :root.dark {
+    --background: 222 47% 8%;
+    --foreground: 210 40% 96%;
+    --card: 224 33% 12%;
+    --card-foreground: 210 40% 96%;
+    --popover: 224 33% 12%;
+    --popover-foreground: 210 40% 96%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 96%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 70%;
+    --accent: 217 33% 17%;
+    --accent-foreground: 210 40% 96%;
+    --border: 217 30% 22%;
+    --input: 217 30% 22%;
+    --surface-bg:
+      radial-gradient(circle at 14% 18%, rgba(59, 130, 246, 0.16), transparent 24%),
+      radial-gradient(circle at 85% 10%, rgba(34, 211, 238, 0.10), transparent 18%),
+      linear-gradient(180deg, #07111f 0%, #0b1324 100%);
+    --glass-bg: rgba(15, 23, 42, 0.64);
+    --glass-border: rgba(148, 163, 184, 0.12);
+    --grid-line: rgba(71, 85, 105, 0.18);
+    --hero-badge-bg: rgba(15, 23, 42, 0.64);
+    --hero-badge-border: rgba(125, 211, 252, 0.22);
+    --hero-badge-text: rgba(186, 230, 253, 0.92);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    background-image: var(--surface-bg);
+  }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Monospace font for code fields */
+.font-mono {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+}
+
+/* Table hover transitions */
+tbody tr {
+  transition: background-color 0.1s ease;
+}
+
+/* Recharts responsive */
+.recharts-wrapper {
+  font-family: inherit;
+}
+
+.app-noise::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.2;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(circle at center, black, transparent 85%);
+}
+
+.glass-panel {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 18px 60px rgba(15, 23, 42, 0.08);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.hero-grid {
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 36px 36px;
+}
+
+.theme-sidebar {
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--shell-accent) 18%, transparent), transparent 28%),
+    linear-gradient(180deg, #020617 0%, color-mix(in srgb, var(--shell-base) 88%, #0f172a) 100%);
+}
+
+.hero-badge {
+  background: var(--hero-badge-bg);
+  border-color: var(--hero-badge-border);
+  color: var(--hero-badge-text);
+}
+
+.orb-layer {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(12px);
+  opacity: 0.85;
+  animation: float-drift 15s ease-in-out infinite;
+}
+
+.lift-card {
+  transition:
+    transform 220ms ease,
+    box-shadow 220ms ease,
+    border-color 220ms ease,
+    background-color 220ms ease;
+}
+
+.lift-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+}
+
+.stagger-in {
+  opacity: 0;
+  transform: translateY(20px) scale(0.985);
+  animation: stage-in 680ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.glow-ring {
+  position: relative;
+}
+
+.glow-ring::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.45), rgba(34, 211, 238, 0.28), transparent 60%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+@keyframes float-drift {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(0, -14px, 0) scale(1.04);
+  }
+}
+
+@keyframes stage-in {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .orb-layer,
+  .stagger-in,
+  .lift-card {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}

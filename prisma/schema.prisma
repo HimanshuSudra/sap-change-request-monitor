@@ -1,0 +1,146 @@
+// ══════════════════════════════════════════════════════════════════
+//  PCMS — Prisma Schema
+//  Database: PostgreSQL
+// ══════════════════════════════════════════════════════════════════
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── Enums ──────────────────────────────────────────────────────────
+
+enum TrMovedBy {
+  Lokesh
+  Manoj
+}
+
+enum YesNoNa {
+  Yes
+  No
+  NA
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+}
+
+// ── Change Record ──────────────────────────────────────────────────
+
+model ChangeRecord {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // ── Request Information ──────────────────────
+  year             String   // e.g. "2024"
+  serialNumber     String?  // e.g. "2024-001"
+  typeOfRequest    String   // from Settings
+  requestNumber    String?  // Mojo ticket number e.g. "REQ-12345"
+  requestDescription          String  @db.Text
+  developmentTaskOrReportName String?
+
+  // ── Technical Details ────────────────────────
+  tCode          String? // SAP T-Code e.g. SE38
+  programName    String? // ABAP program name
+  smartFormOrScript String?
+  smartformBackup   String?
+  programBackup     String?
+
+  // ── Transport Request ────────────────────────
+  trNumber      String?
+  trCreatedBy   String?
+  trCreationDate DateTime?
+  trMovedBy     TrMovedBy?
+  trMovedDate   DateTime?
+  moveTo        String?     // from Settings
+
+  // ── Documentation & Verification ────────────
+  requester                      String?
+  documentTestCaseChecked        YesNoNa?
+  documentCheckedBy              String?
+  documentCheckedDate            DateTime?
+  documentUpdated                YesNoNa?
+  programOrConfigurationVerified YesNoNa?
+  documentLink                   String?  // Google Drive / other URL
+  productionBackupLink           String?
+
+  // ── Status & Remarks ─────────────────────────
+  status  String  // from Settings; required
+  remarks String? @db.Text
+
+  // ── Relations ────────────────────────────────
+  auditLogs AuditLog[]
+
+  // ── Indexes ──────────────────────────────────
+  @@index([year])
+  @@index([status])
+  @@index([typeOfRequest])
+  @@index([requestNumber])
+  @@index([trNumber])
+  @@index([createdAt])
+  @@map("change_records")
+}
+
+// ── Settings (dropdown options) ────────────────────────────────────
+
+model Setting {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  key    String // e.g. "typeOfRequest", "status", "moveTo"
+  value  String // the dropdown option text
+  label  String? // optional display override
+  order  Int     @default(0) // sort order within the group
+  active Boolean @default(true)
+
+  @@unique([key, value])
+  @@index([key])
+  @@map("settings")
+}
+
+// ── Audit Log ──────────────────────────────────────────────────────
+
+model AuditLog {
+  id        String      @id @default(cuid())
+  createdAt DateTime    @default(now())
+
+  action   AuditAction
+  recordId String
+
+  // Snapshot of changed fields (JSON diff)
+  before   Json?
+  after    Json?
+
+  // Who performed the action (future auth integration)
+  userId   String?
+  userName String?
+
+  record ChangeRecord @relation(fields: [recordId], references: [id], onDelete: Cascade)
+
+  @@index([recordId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+// ── User (stub for future auth) ────────────────────────────────────
+
+model User {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  email    String  @unique
+  name     String
+  role     String  @default("user") // "admin" | "user" | "viewer"
+  active   Boolean @default(true)
+
+  @@map("users")
+}
