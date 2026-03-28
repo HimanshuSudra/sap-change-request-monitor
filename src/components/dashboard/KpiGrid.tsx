@@ -113,7 +113,7 @@ export function KpiGrid({ stats, isLoading, onFilter }: KpiGridProps) {
                 : undefined
             }
             className={cn(
-              "glass-panel glow-ring lift-card stagger-in relative flex min-h-[9.5rem] flex-col gap-4 overflow-hidden rounded-[1.75rem] p-4",
+              "glass-panel glow-ring lift-card motion-tile stagger-in relative flex min-h-[9.5rem] flex-col gap-4 overflow-hidden rounded-[1.75rem] p-4",
               clickable &&
                 "cursor-pointer"
             )}
@@ -126,17 +126,17 @@ export function KpiGrid({ stats, isLoading, onFilter }: KpiGridProps) {
                 cfg.colorClass
               )}
             >
-              <cfg.icon className="h-4 w-4" />
+              <cfg.icon className="motion-icon h-4 w-4 rounded-2xl p-0" />
             </div>
 
             <div className="space-y-1">
-              <div className="text-[11px] font-medium uppercase tracking-[0.18em] text-slate-500">
+              <div className="theme-subtle text-[11px] font-medium uppercase tracking-[0.18em]">
                 {cfg.label}
               </div>
-              <div className="text-3xl font-bold tracking-tight text-slate-900 tabular-nums">
+              <div className="theme-heading text-3xl font-bold tracking-tight tabular-nums">
                 {typeof value === "number" ? value.toLocaleString() : value}
               </div>
-              <div className="text-[11px] text-slate-500">{cfg.sub}</div>
+              <div className="theme-body text-[11px]">{cfg.sub}</div>
             </div>
 
             {ratio !== null && (
@@ -147,7 +147,7 @@ export function KpiGrid({ stats, isLoading, onFilter }: KpiGridProps) {
                     style={{ width: `${Math.min(ratio, 100)}%` }}
                   />
                 </div>
-                <div className="text-[10px] uppercase tracking-[0.18em] text-slate-400">{ratio}% completion</div>
+                <div className="theme-subtle text-[10px] uppercase tracking-[0.18em]">{ratio}% completion</div>
               </div>
             )}
           </div>

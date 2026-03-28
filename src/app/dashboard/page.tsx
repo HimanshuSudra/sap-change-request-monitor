@@ -22,7 +22,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <section className="stagger-in glass-panel hero-grid glow-ring relative overflow-hidden rounded-[2rem] border-white/50 px-6 py-8 md:px-8">
+      <section className="stagger-in glass-panel hero-grid glow-ring motion-tile relative overflow-hidden rounded-[2rem] border-white/50 px-6 py-8 md:px-8">
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="orb-layer -left-8 top-4 h-32 w-32 bg-sky-300/30" />
           <div className="orb-layer right-16 top-10 h-24 w-24 bg-cyan-300/35" style={{ animationDelay: "-5s" }} />
@@ -34,25 +34,25 @@ export default function DashboardPage() {
               SAP Change Request Monitoring Tool
             </div>
             <div className="max-w-3xl space-y-3">
-              <h2 className="text-3xl font-semibold tracking-tight text-slate-950 md:text-5xl">
+              <h2 className="theme-heading font-display text-3xl font-semibold tracking-tight md:text-5xl">
                 Record, monitor, and track SAP changes across development and configuration work.
               </h2>
-              <p className="max-w-2xl text-sm leading-7 text-slate-600 md:text-base">
+              <p className="theme-body max-w-2xl text-sm leading-7 md:text-base">
                 Use this tool to capture SAP-level changes, follow transport movement, maintain supporting documentation, and monitor request status from creation through closure for both development and configuration activities.
               </p>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <div className="glass-panel lift-card rounded-[1.5rem] border-white/50 p-4">
-              <div className="text-[11px] uppercase tracking-[0.2em] text-slate-500">Throughput</div>
-              <div className="mt-2 text-3xl font-bold text-slate-900">{statsData?.total ?? 0}</div>
-              <div className="mt-2 text-xs text-slate-500">Requests currently indexed in the control plane</div>
+            <div className="glass-panel motion-tile lift-card rounded-[1.5rem] border-white/50 p-4">
+              <div className="theme-subtle text-[11px] uppercase tracking-[0.2em]">Throughput</div>
+              <div className="theme-heading mt-2 text-3xl font-bold">{statsData?.total ?? 0}</div>
+              <div className="theme-body mt-2 text-xs">Requests currently indexed in the control plane</div>
             </div>
-            <div className="glass-panel lift-card rounded-[1.5rem] border-white/50 p-4">
-              <div className="text-[11px] uppercase tracking-[0.2em] text-slate-500">Completion</div>
-              <div className="mt-2 text-3xl font-bold text-slate-900">{statsData?.completionRatio ?? 0}%</div>
-              <div className="mt-2 text-xs text-slate-500">Closed requests relative to portfolio volume</div>
+            <div className="glass-panel motion-tile lift-card rounded-[1.5rem] border-white/50 p-4">
+              <div className="theme-subtle text-[11px] uppercase tracking-[0.2em]">Completion</div>
+              <div className="theme-heading mt-2 text-3xl font-bold">{statsData?.completionRatio ?? 0}%</div>
+              <div className="theme-body mt-2 text-xs">Closed requests relative to portfolio volume</div>
             </div>
           </div>
         </div>
@@ -74,7 +74,7 @@ export default function DashboardPage() {
               isLoading={chartsLoading}
               onSliceClick={(value) => handleChartFilter("status", value)}
             />
-            <p className="mt-2 text-center text-[10px] text-slate-400">
+            <p className="theme-subtle mt-2 text-center text-[10px]">
               Click a slice to filter records
             </p>
           </CardContent>
@@ -91,7 +91,7 @@ export default function DashboardPage() {
               isLoading={chartsLoading}
               onSliceClick={(value) => handleChartFilter("typeOfRequest", value)}
             />
-            <p className="mt-2 text-center text-[10px] text-slate-400">
+            <p className="theme-subtle mt-2 text-center text-[10px]">
               Click a slice to filter records
             </p>
           </CardContent>
@@ -106,7 +106,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent className="pb-4">
             <MonthlyBarChart data={chartData?.byMonth ?? {}} isLoading={chartsLoading} />
-            <p className="mt-2 text-center text-[10px] text-slate-400">
+            <p className="theme-subtle mt-2 text-center text-[10px]">
               Records created each month
             </p>
           </CardContent>
