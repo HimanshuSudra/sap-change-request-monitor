@@ -1,0 +1,23 @@
+# Root repo hygiene
+.DS_Store
+Thumbs.db
+
+# Local archives
+*.zip
+
+# Desktop app / Next.js workspace
+pcms/node_modules/
+pcms/.next/
+pcms/out/
+pcms/build/
+pcms/.env
+pcms/.env.local
+pcms/.env.development.local
+pcms/.env.test.local
+pcms/.env.production.local
+pcms/.vercel/
+pcms/*.tsbuildinfo
+
+# Prisma local database artifacts
+pcms/prisma/*.db
+pcms/prisma/*.db-journal

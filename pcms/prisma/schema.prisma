@@ -1,0 +1,247 @@
+// ══════════════════════════════════════════════════════════════════
+//  PCMS — Prisma Schema
+//  Database: PostgreSQL
+// ══════════════════════════════════════════════════════════════════
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── Enums ──────────────────────────────────────────────────────────
+
+enum TrMovedBy {
+  Lokesh
+  Manoj
+}
+
+enum YesNoNa {
+  Yes
+  No
+  NA
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+}
+
+enum TransportStageStatus {
+  UNKNOWN
+  DEV_ONLY
+  QA_QUEUE
+  QA_IMPORTED
+  QA_FAILED
+  PROD_QUEUE
+  PROD_IMPORTED
+  PROD_FAILED
+}
+
+enum TransportActionType {
+  SYNC
+  MOVE_TO_QA
+  MOVE_TO_PROD
+}
+
+enum TransportActionStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+enum TransportApprovalStatus {
+  NOT_REQUESTED
+  PENDING
+  APPROVED
+  DECLINED
+}
+
+// ── Change Record ──────────────────────────────────────────────────
+
+model ChangeRecord {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // ── Request Information ──────────────────────
+  year             String   // e.g. "2024"
+  serialNumber     String?  // e.g. "2024-001"
+  typeOfRequest    String   // from Settings
+  requestNumber    String?  // Mojo ticket number e.g. "REQ-12345"
+  mojoTicketUrl    String?
+  requestDescription          String  @db.Text
+  developmentTaskOrReportName String?
+
+  // ── Technical Details ────────────────────────
+  tCode          String? // SAP T-Code e.g. SE38
+  programName    String? // ABAP program name
+  smartFormOrScript String?
+  smartformBackup   String?
+  programBackup     String?
+
+  // ── Transport Request ────────────────────────
+  trNumber      String?
+  trCreatedBy   String?
+  trCreationDate DateTime?
+  trMovedBy     TrMovedBy?
+  trMovedDate   DateTime?
+  moveTo        String?     // from Settings
+
+  // ── Documentation & Verification ────────────
+  requester                      String?
+  documentTestCaseChecked        YesNoNa?
+  documentCheckedBy              String?
+  documentCheckedDate            DateTime?
+  documentUpdated                YesNoNa?
+  programOrConfigurationVerified YesNoNa?
+  documentLink                   String?  // Google Drive / other URL
+  productionBackupLink           String?
+
+  // ── Status & Remarks ─────────────────────────
+  status  String  // from Settings; required
+  remarks String? @db.Text
+
+  // ── Relations ────────────────────────────────
+  auditLogs AuditLog[]
+  transportRequests TransportRequest[]
+
+  // ── Indexes ──────────────────────────────────
+  @@index([year])
+  @@index([status])
+  @@index([typeOfRequest])
+  @@index([requestNumber])
+  @@index([trNumber])
+  @@index([createdAt])
+  @@map("change_records")
+}
+
+// ── Settings (dropdown options) ────────────────────────────────────
+
+model Setting {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  key    String // e.g. "typeOfRequest", "status", "moveTo"
+  value  String // the dropdown option text
+  label  String? // optional display override
+  order  Int     @default(0) // sort order within the group
+  active Boolean @default(true)
+
+  @@unique([key, value])
+  @@index([key])
+  @@map("settings")
+}
+
+// ── Audit Log ──────────────────────────────────────────────────────
+
+model AuditLog {
+  id        String      @id @default(cuid())
+  createdAt DateTime    @default(now())
+
+  action   AuditAction
+  recordId String
+
+  // Snapshot of changed fields (JSON diff)
+  before   Json?
+  after    Json?
+
+  // Who performed the action (future auth integration)
+  userId   String?
+  userName String?
+
+  record ChangeRecord @relation(fields: [recordId], references: [id], onDelete: Cascade)
+
+  @@index([recordId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+// ── User (stub for future auth) ────────────────────────────────────
+
+model User {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  email    String  @unique
+  name     String
+  role     String  @default("user") // "admin" | "user" | "viewer"
+  active   Boolean @default(true)
+
+  @@map("users")
+}
+
+model TransportRequest {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  trNumber          String  @unique
+  description       String? @db.Text
+  owner             String?
+  requestType       String?
+  requestStatus     String?
+  developmentClass  String?
+  targetSystem      String?
+  sourceSystem      String?
+  sourceClient      String?
+  qaStatus          TransportStageStatus @default(UNKNOWN)
+  qaImportedAt      DateTime?
+  qaReturnCode      String?
+  prodStatus        TransportStageStatus @default(UNKNOWN)
+  prodImportedAt    DateTime?
+  prodReturnCode    String?
+  prodApprovalStatus     TransportApprovalStatus @default(NOT_REQUESTED)
+  prodApprovalRequestedAt DateTime?
+  prodApprovalRequestedBy String?
+  prodApprovalDecisionAt  DateTime?
+  prodApprovalDecisionBy  String?
+  prodApprovalEmailSentAt DateTime?
+  lastAction        String?
+  lastSyncedAt      DateTime?
+  sapUpdatedAt      DateTime?
+  rawPayload        Json?
+  changeRecordId    String?
+
+  changeRecord ChangeRecord?          @relation(fields: [changeRecordId], references: [id], onDelete: SetNull)
+  actionAudits TransportActionAudit[]
+
+  @@index([owner])
+  @@index([requestStatus])
+  @@index([qaStatus])
+  @@index([prodStatus])
+  @@index([lastSyncedAt])
+  @@index([changeRecordId])
+  @@map("transport_requests")
+}
+
+model TransportActionAudit {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  trNumber      String
+  actionType    TransportActionType
+  actionStatus  TransportActionStatus @default(PENDING)
+  environment   String?
+  requestedBy   String?
+  message       String?
+  requestBody   Json?
+  responseBody  Json?
+  transportId   String?
+
+  transportRequest TransportRequest? @relation(fields: [transportId], references: [id], onDelete: SetNull)
+
+  @@index([trNumber])
+  @@index([actionType])
+  @@index([actionStatus])
+  @@index([transportId])
+  @@index([createdAt])
+  @@map("transport_action_audits")
+}
