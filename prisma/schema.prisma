@@ -31,6 +31,29 @@ enum AuditAction {
   DELETE
 }
 
+enum TransportStageStatus {
+  UNKNOWN
+  DEV_ONLY
+  QA_QUEUE
+  QA_IMPORTED
+  QA_FAILED
+  PROD_QUEUE
+  PROD_IMPORTED
+  PROD_FAILED
+}
+
+enum TransportActionType {
+  SYNC
+  MOVE_TO_QA
+  MOVE_TO_PROD
+}
+
+enum TransportActionStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
 // ── Change Record ──────────────────────────────────────────────────
 
 model ChangeRecord {
@@ -78,6 +101,7 @@ model ChangeRecord {
 
   // ── Relations ────────────────────────────────
   auditLogs AuditLog[]
+  transportRequests TransportRequest[]
 
   // ── Indexes ──────────────────────────────────
   @@index([year])
@@ -144,4 +168,67 @@ model User {
   active   Boolean @default(true)
 
   @@map("users")
+}
+
+model TransportRequest {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  trNumber          String  @unique
+  description       String? @db.Text
+  owner             String?
+  requestType       String?
+  requestStatus     String?
+  developmentClass  String?
+  targetSystem      String?
+  sourceSystem      String?
+  sourceClient      String?
+  qaStatus          TransportStageStatus @default(UNKNOWN)
+  qaImportedAt      DateTime?
+  qaReturnCode      String?
+  prodStatus        TransportStageStatus @default(UNKNOWN)
+  prodImportedAt    DateTime?
+  prodReturnCode    String?
+  lastAction        String?
+  lastSyncedAt      DateTime?
+  sapUpdatedAt      DateTime?
+  rawPayload        Json?
+  changeRecordId    String?
+
+  changeRecord ChangeRecord?          @relation(fields: [changeRecordId], references: [id], onDelete: SetNull)
+  actionAudits TransportActionAudit[]
+
+  @@index([owner])
+  @@index([requestStatus])
+  @@index([qaStatus])
+  @@index([prodStatus])
+  @@index([lastSyncedAt])
+  @@index([changeRecordId])
+  @@map("transport_requests")
+}
+
+model TransportActionAudit {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  trNumber      String
+  actionType    TransportActionType
+  actionStatus  TransportActionStatus @default(PENDING)
+  environment   String?
+  requestedBy   String?
+  message       String?
+  requestBody   Json?
+  responseBody  Json?
+  transportId   String?
+
+  transportRequest TransportRequest? @relation(fields: [transportId], references: [id], onDelete: SetNull)
+
+  @@index([trNumber])
+  @@index([actionType])
+  @@index([actionStatus])
+  @@index([transportId])
+  @@index([createdAt])
+  @@map("transport_action_audits")
 }

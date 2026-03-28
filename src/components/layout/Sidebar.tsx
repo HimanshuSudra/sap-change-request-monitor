@@ -11,6 +11,7 @@ import {
   BarChart3,
   X,
   TableProperties,
+  GitBranchPlus,
 } from "lucide-react";
 
 interface NavItem {
@@ -38,6 +39,11 @@ const NAV_ITEMS: NavItem[] = [
     href: "/records/new",
     label: "New Request",
     icon: PlusCircle,
+  },
+  {
+    href: "/trms",
+    label: "TRMS",
+    icon: GitBranchPlus,
   },
   {
     section: "Analytics",

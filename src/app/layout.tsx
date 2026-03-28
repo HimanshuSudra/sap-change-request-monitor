@@ -1,11 +1,12 @@
 // src/app/layout.tsx
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Manrope, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 import { AppShell } from "@/components/layout/AppShell";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const manrope = Manrope({ subsets: ["latin"], variable: "--font-sans" });
+const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-display" });
 
 export const metadata: Metadata = {
   title: "PCMS — Program Change Management System",
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} font-sans bg-background text-foreground antialiased`}>
+      <body className={`${manrope.variable} ${spaceGrotesk.variable} font-sans bg-background text-foreground antialiased`}>
         <Providers>
           <AppShell>{children}</AppShell>
         </Providers>

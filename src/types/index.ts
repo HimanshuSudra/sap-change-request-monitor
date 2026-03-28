@@ -1,10 +1,22 @@
 // src/types/index.ts
 // Shared TypeScript types for the entire PCMS application
 
-import { ChangeRecord, Setting, AuditLog, TrMovedBy, YesNoNa } from "@prisma/client";
+import {
+  ChangeRecord,
+  Setting,
+  AuditLog,
+  TrMovedBy,
+  YesNoNa,
+  TransportRequest,
+  TransportActionAudit,
+  TransportStageStatus,
+  TransportActionStatus,
+  TransportActionType,
+} from "@prisma/client";
 
 // ── Re-export Prisma enums ────────────────────────────────────────
 export { TrMovedBy, YesNoNa };
+export { TransportStageStatus, TransportActionStatus, TransportActionType };
 
 // ── Core record type (what the API returns) ───────────────────────
 export type ChangeRecordWithLogs = ChangeRecord & {
@@ -178,4 +190,64 @@ export interface TableColumn {
   date?: boolean;
   truncate?: number;
   link?: boolean;
+}
+
+export type TransportRequestWithActions = TransportRequest & {
+  actionAudits?: TransportActionAudit[];
+};
+
+export interface TransportRequestDto {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  trNumber: string;
+  description: string | null;
+  owner: string | null;
+  requestType: string | null;
+  requestStatus: string | null;
+  developmentClass: string | null;
+  targetSystem: string | null;
+  sourceSystem: string | null;
+  sourceClient: string | null;
+  qaStatus: TransportStageStatus;
+  qaImportedAt: string | null;
+  qaReturnCode: string | null;
+  prodStatus: TransportStageStatus;
+  prodImportedAt: string | null;
+  prodReturnCode: string | null;
+  lastAction: string | null;
+  lastSyncedAt: string | null;
+  sapUpdatedAt: string | null;
+  changeRecordId: string | null;
+}
+
+export interface TransportActionAuditDto {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  trNumber: string;
+  actionType: TransportActionType;
+  actionStatus: TransportActionStatus;
+  environment: string | null;
+  requestedBy: string | null;
+  message: string | null;
+  transportId: string | null;
+}
+
+export interface TransportListResponse {
+  transports: TransportRequestDto[];
+  recentActions: TransportActionAuditDto[];
+  total: number;
+}
+
+export interface TransportSyncResult {
+  synced: number;
+  mode: "mock" | "sap";
+}
+
+export interface TransportMoveResult {
+  trNumber: string;
+  target: "QA" | "PROD";
+  status: TransportActionStatus;
+  message: string;
 }

@@ -27,6 +27,10 @@ const PAGE_META: Record<string, { title: string; sub: string }> = {
     title: "Reports & Analytics",
     sub: "Trends, distributions and performance metrics",
   },
+  "/trms": {
+    title: "TRMS",
+    sub: "Transport Request Management System control plane",
+  },
 };
 
 interface TopbarProps {
@@ -43,11 +47,12 @@ export function Topbar({ onMenuClick }: TopbarProps) {
   const [search, setSearch] = useState("");
   const [themeMenuOpen, setThemeMenuOpen] = useState(false);
 
-  const themes: Array<{ value: ThemeName; label: string }> = [
-    { value: "sap", label: "SAP" },
-    { value: "ui5", label: "UI5" },
-    { value: "anime", label: "Anime" },
-    { value: "marvel", label: "Marvel" },
+  const themes: Array<{ value: ThemeName; label: string; swatch: string; note: string }> = [
+    { value: "harbor", label: "Harbor", swatch: "from-teal-500 via-cyan-500 to-amber-400", note: "Clean executive default" },
+    { value: "graphite", label: "Graphite", swatch: "from-slate-900 via-orange-500 to-red-500", note: "Bold operational contrast" },
+    { value: "ember", label: "Ember", swatch: "from-rose-500 via-amber-400 to-violet-600", note: "Warm high-energy look" },
+    { value: "sap", label: "SAP", swatch: "from-sky-500 via-blue-600 to-slate-900", note: "Familiar enterprise palette" },
+    { value: "ui5", label: "UI5", swatch: "from-blue-500 via-sky-400 to-indigo-700", note: "Bright platform styling" },
   ];
 
   // Find best matching meta entry
@@ -111,7 +116,7 @@ export function Topbar({ onMenuClick }: TopbarProps) {
             {themes.find((item) => item.value === theme)?.label}
           </button>
           {themeMenuOpen && (
-            <div className="glass-panel absolute right-0 top-12 z-50 w-40 rounded-2xl p-2">
+            <div className="glass-panel absolute right-0 top-12 z-50 w-64 rounded-3xl p-2 shadow-2xl">
               {themes.map((item) => (
                 <button
                   key={item.value}
@@ -121,14 +126,18 @@ export function Topbar({ onMenuClick }: TopbarProps) {
                     setThemeMenuOpen(false);
                   }}
                   className={cn(
-                    "flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-xs transition-colors",
+                    "flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left text-xs transition-colors",
                     theme === item.value
                       ? "bg-primary text-primary-foreground"
                       : "theme-text-muted hover:bg-accent hover:text-accent-foreground"
                   )}
                 >
-                  <span>{item.label}</span>
-                  {theme === item.value && <span>Active</span>}
+                  <span className={cn("h-8 w-8 rounded-2xl bg-gradient-to-br", item.swatch)} />
+                  <span className="flex-1">
+                    <span className="block font-semibold">{item.label}</span>
+                    <span className="block text-[11px] opacity-75">{item.note}</span>
+                  </span>
+                  {theme === item.value && <span className="text-[11px]">Active</span>}
                 </button>
               ))}
             </div>

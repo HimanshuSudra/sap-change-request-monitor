@@ -1,8 +1,8 @@
 // src/lib/utils.ts
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { ChangeRecord } from "@prisma/client";
-import { ChangeRecordDto } from "@/types";
+import { ChangeRecord, TransportActionAudit, TransportRequest } from "@prisma/client";
+import { ChangeRecordDto, TransportActionAuditDto, TransportRequestDto } from "@/types";
 
 /** shadcn/ui className merge helper */
 export function cn(...inputs: ClassValue[]) {
@@ -18,6 +18,28 @@ export function toDto(r: ChangeRecord): ChangeRecordDto {
     trCreationDate: r.trCreationDate?.toISOString().split("T")[0] ?? null,
     trMovedDate: r.trMovedDate?.toISOString().split("T")[0] ?? null,
     documentCheckedDate: r.documentCheckedDate?.toISOString().split("T")[0] ?? null,
+  };
+}
+
+/** Convert a Prisma TransportRequest to a plain JSON-safe DTO */
+export function toTransportDto(r: TransportRequest): TransportRequestDto {
+  return {
+    ...r,
+    createdAt: r.createdAt.toISOString(),
+    updatedAt: r.updatedAt.toISOString(),
+    qaImportedAt: r.qaImportedAt?.toISOString() ?? null,
+    prodImportedAt: r.prodImportedAt?.toISOString() ?? null,
+    lastSyncedAt: r.lastSyncedAt?.toISOString() ?? null,
+    sapUpdatedAt: r.sapUpdatedAt?.toISOString() ?? null,
+  };
+}
+
+/** Convert a Prisma TransportActionAudit to a plain JSON-safe DTO */
+export function toTransportActionDto(a: TransportActionAudit): TransportActionAuditDto {
+  return {
+    ...a,
+    createdAt: a.createdAt.toISOString(),
+    updatedAt: a.updatedAt.toISOString(),
   };
 }
 
@@ -46,6 +68,9 @@ export function statusVariant(
   const l = s.toLowerCase();
   if (l.includes("complet") || l.includes("closed") || l.includes("done"))
     return "success";
+  if (l.includes("imported")) return "success";
+  if (l.includes("queue")) return "info";
+  if (l.includes("fail")) return "error";
   if (l.includes("progress") || l.includes("active") || l.includes("open"))
     return "info";
   if (l.includes("pending") || l.includes("wait")) return "warning";

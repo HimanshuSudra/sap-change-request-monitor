@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-export type ThemeName = "sap" | "ui5" | "anime" | "marvel";
+export type ThemeName = "harbor" | "graphite" | "ember" | "sap" | "ui5";
 export type ColorMode = "light" | "dark";
 
 type ThemeContextValue = {
@@ -23,14 +23,32 @@ function applyTheme(theme: ThemeName, mode: ColorMode) {
   root.classList.toggle("dark", mode === "dark");
 }
 
+function normalizeTheme(theme: string | null): ThemeName {
+  switch (theme) {
+    case "sap":
+    case "ui5":
+      return theme;
+    case "anime":
+      return "ember";
+    case "marvel":
+      return "graphite";
+    case "harbor":
+    case "graphite":
+    case "ember":
+      return theme;
+    default:
+      return "harbor";
+  }
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = React.useState<ThemeName>("sap");
+  const [theme, setThemeState] = React.useState<ThemeName>("harbor");
   const [mode, setMode] = React.useState<ColorMode>("light");
 
   React.useEffect(() => {
-    const savedTheme = window.localStorage.getItem(THEME_STORAGE_KEY) as ThemeName | null;
+    const savedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
     const savedMode = window.localStorage.getItem(MODE_STORAGE_KEY) as ColorMode | null;
-    const nextTheme = savedTheme ?? "sap";
+    const nextTheme = normalizeTheme(savedTheme);
     const nextMode = savedMode ?? "light";
     setThemeState(nextTheme);
     setMode(nextMode);
