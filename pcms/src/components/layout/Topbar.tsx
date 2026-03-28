@@ -76,7 +76,7 @@ export function Topbar({ onMenuClick }: TopbarProps) {
   );
 
   return (
-    <header className="glass-panel relative z-10 mx-4 mt-4 flex h-16 flex-shrink-0 items-center gap-4 rounded-3xl border-white/40 px-4 md:mx-6 md:px-6">
+    <header className="glass-panel relative z-10 mx-4 mt-4 flex h-[4.75rem] flex-shrink-0 items-center gap-4 rounded-[2rem] border-white/40 px-5 md:mx-6 md:px-7">
       {/* Mobile hamburger */}
       <button
         className="theme-text-muted hover:text-foreground lg:hidden"
@@ -87,11 +87,11 @@ export function Topbar({ onMenuClick }: TopbarProps) {
 
       {/* Page title */}
       <div className="min-w-0 flex-1">
-        <h1 className="truncate text-base font-semibold leading-tight text-foreground">
+        <h1 className="truncate text-xl font-semibold leading-tight text-foreground">
           {meta.title}
         </h1>
         {meta.sub && (
-          <p className="theme-text-muted hidden truncate text-xs leading-tight sm:block">
+          <p className="theme-text-muted hidden truncate pt-0.5 text-sm leading-tight sm:block">
             {meta.sub}
           </p>
         )}
@@ -103,7 +103,7 @@ export function Topbar({ onMenuClick }: TopbarProps) {
           <button
             type="button"
             onClick={() => router.push("/settings")}
-            className="surface-panel-strong theme-text-muted flex h-10 items-center gap-2 rounded-2xl px-3 text-xs font-medium transition-colors hover:text-foreground"
+            className="surface-panel-strong theme-text-muted flex h-11 items-center gap-2 rounded-2xl px-4 text-sm font-medium transition-colors hover:text-foreground"
           >
             <SlidersHorizontal className="h-3.5 w-3.5" />
             Settings
@@ -113,13 +113,13 @@ export function Topbar({ onMenuClick }: TopbarProps) {
         {/* Global quick search */}
         <form onSubmit={handleSearch} className="hidden md:block">
           <div className="relative">
-            <Search className="theme-text-soft pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2" />
+            <Search className="theme-text-soft pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Quick search…"
-              className="theme-field h-10 w-56 rounded-2xl border pl-8 pr-3 text-xs shadow-inner transition-all focus:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="theme-field h-11 w-64 rounded-2xl border pl-10 pr-4 text-sm shadow-inner transition-all focus:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
           </div>
         </form>
@@ -129,20 +129,18 @@ export function Topbar({ onMenuClick }: TopbarProps) {
           onClick={handleRefresh}
           disabled={refreshing}
           title="Refresh data"
-          className="surface-panel-strong theme-text-muted flex h-10 w-10 items-center justify-center rounded-2xl transition-colors hover:text-foreground disabled:opacity-50"
+          className="surface-panel-strong theme-text-muted flex h-11 w-11 items-center justify-center rounded-2xl transition-colors hover:text-foreground disabled:opacity-50"
         >
-          <RefreshCw
-            className={cn("h-3.5 w-3.5", refreshing && "animate-spin")}
-          />
+          <RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
         </button>
 
         <button
           type="button"
           onClick={() => signOut({ callbackUrl: "/login" })}
-          className="surface-panel-strong theme-text-muted hidden h-10 items-center gap-2 rounded-2xl px-3 text-xs font-medium transition-colors hover:text-foreground lg:flex"
+          className="surface-panel-strong theme-text-muted hidden h-11 items-center gap-2 rounded-2xl px-4 text-sm font-medium transition-colors hover:text-foreground lg:flex"
           title={session?.user?.email ?? "Sign out"}
         >
-          <LogOut className="h-3.5 w-3.5" />
+          <LogOut className="h-4 w-4" />
           <span className="max-w-40 truncate">{session?.user?.email ?? "Sign out"}</span>
         </button>
       </div>

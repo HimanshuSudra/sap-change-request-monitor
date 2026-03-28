@@ -4,7 +4,7 @@ import { Moon, Sun } from "lucide-react";
 import { useTheme, type ThemeName } from "@/components/ThemeProvider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import { clearPointerGlow, cn, trackPointerGlow } from "@/lib/utils";
 
 const THEMES: Array<{ value: ThemeName; label: string; swatch: string; note: string }> = [
   { value: "harbor", label: "Harbor", swatch: "from-teal-500 via-cyan-500 to-amber-400", note: "Clean executive default" },
@@ -24,56 +24,60 @@ export default function SettingsPage() {
   const { theme, mode, setTheme, toggleMode } = useTheme();
 
   return (
-    <div className="page-reveal space-y-6">
-      <section className="glass-panel interactive-spotlight motion-tile rounded-[2rem] border-white/50 px-6 py-8">
+    <div className="page-reveal space-y-8">
+      <section
+        className="magnetic-surface glass-panel interactive-spotlight rounded-[2.25rem] border-white/50 px-7 py-10 md:px-10 md:py-12"
+        onPointerMove={trackPointerGlow}
+        onPointerLeave={clearPointerGlow}
+      >
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div className="space-y-3">
+          <div className="magnetic-child space-y-4">
             <div className="hero-badge inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em]">
               Workspace Preferences
             </div>
-            <div className="space-y-2">
-              <h2 className="theme-heading font-display text-3xl font-semibold tracking-tight md:text-5xl">
+            <div className="space-y-3">
+              <h2 className="theme-heading font-display text-4xl font-semibold tracking-tight md:text-[3.5rem] md:leading-[1.02]">
                 Tune the visual system for
                 <span className="theme-gradient-text"> clarity and motion</span>.
               </h2>
-              <p className="theme-body max-w-3xl text-sm leading-7 md:text-base">
+              <p className="theme-body max-w-3xl text-base leading-8 md:text-lg">
                 Choose a runtime theme preset, switch light or dark mode, and preview how the dashboard and TRMS surfaces respond to cursor movement and hover.
               </p>
             </div>
           </div>
 
-          <Button variant="outline" className="gap-2" onClick={toggleMode}>
+          <Button variant="outline" className="magnetic-child h-11 gap-2 px-4 text-sm" onClick={toggleMode}>
             {mode === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
             {mode === "light" ? "Switch to Dark" : "Switch to Light"}
           </Button>
         </div>
       </section>
 
-      <Card className="glass-panel motion-tile rounded-[1.75rem] border-white/50 bg-white/75">
+      <Card className="glass-panel motion-tile rounded-[1.9rem] border-white/50 bg-white/75">
         <CardHeader>
-          <CardTitle>Theme Presets</CardTitle>
-          <CardDescription>All app themes now live in Settings so the header stays focused on actions and navigation.</CardDescription>
+          <CardTitle className="text-base">Theme Presets</CardTitle>
+          <CardDescription className="text-sm">All app themes now live in Settings so the header stays focused on actions and navigation.</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {THEMES.map((item, index) => (
               <button
                 key={item.value}
                 type="button"
                 onClick={() => setTheme(item.value)}
                 className={cn(
-                  "motion-tile rounded-[1.5rem] border p-4 text-left transition-all",
+                  "motion-tile rounded-[1.7rem] border p-5 text-left transition-all",
                   theme === item.value
                     ? "border-primary/60 bg-primary/10"
                     : "border-border bg-white/55 hover:border-primary/30 hover:bg-white/70"
                 )}
                 style={{ animationDelay: `${index * 55}ms` }}
               >
-                <div className={cn("h-24 rounded-[1.25rem] bg-gradient-to-br", item.swatch)} />
+                <div className={cn("h-28 rounded-[1.4rem] bg-gradient-to-br", item.swatch)} />
                 <div className="mt-4 flex items-center justify-between gap-3">
                   <div>
-                    <div className="theme-heading font-semibold">{item.label}</div>
-                    <div className="theme-body mt-1 text-sm">{item.note}</div>
+                    <div className="theme-heading text-base font-semibold">{item.label}</div>
+                    <div className="theme-body mt-1 text-sm leading-6">{item.note}</div>
                   </div>
                   {theme === item.value ? (
                     <span className="hero-badge rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em]">

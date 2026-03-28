@@ -12,13 +12,26 @@ export function cn(...inputs: ClassValue[]) {
 
 export function trackPointerGlow(event: React.PointerEvent<HTMLElement>) {
   const bounds = event.currentTarget.getBoundingClientRect();
-  event.currentTarget.style.setProperty("--mx", `${event.clientX - bounds.left}px`);
-  event.currentTarget.style.setProperty("--my", `${event.clientY - bounds.top}px`);
+  const x = event.clientX - bounds.left;
+  const y = event.clientY - bounds.top;
+  const px = x / bounds.width - 0.5;
+  const py = y / bounds.height - 0.5;
+
+  event.currentTarget.style.setProperty("--mx", `${x}px`);
+  event.currentTarget.style.setProperty("--my", `${y}px`);
+  event.currentTarget.style.setProperty("--tx", `${px * 14}px`);
+  event.currentTarget.style.setProperty("--ty", `${py * 10}px`);
+  event.currentTarget.style.setProperty("--rx", `${py * -5}deg`);
+  event.currentTarget.style.setProperty("--ry", `${px * 7}deg`);
 }
 
 export function clearPointerGlow(event: React.PointerEvent<HTMLElement>) {
   event.currentTarget.style.removeProperty("--mx");
   event.currentTarget.style.removeProperty("--my");
+  event.currentTarget.style.removeProperty("--tx");
+  event.currentTarget.style.removeProperty("--ty");
+  event.currentTarget.style.removeProperty("--rx");
+  event.currentTarget.style.removeProperty("--ry");
 }
 
 /** Convert a Prisma ChangeRecord to a plain JSON-safe DTO */

@@ -56,29 +56,29 @@ export function TransportsView() {
   const importedProd = transports.filter((item) => item.prodStatus === "PROD_IMPORTED").length;
 
   return (
-    <div className="page-reveal space-y-6">
+    <div className="page-reveal space-y-8">
       <section
-        className="glass-panel interactive-spotlight theme-spotlight motion-tile rounded-[2rem] border-white/50 px-6 py-8"
+        className="magnetic-surface glass-panel interactive-spotlight theme-spotlight rounded-[2.25rem] border-white/50 px-7 py-10 md:px-10 md:py-12"
         onPointerMove={trackPointerGlow}
         onPointerLeave={clearPointerGlow}
       >
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div className="space-y-3">
+          <div className="magnetic-child space-y-4">
             <div className="inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em]">
               SAP Transport Control
             </div>
-            <div className="space-y-2">
-              <h2 className="theme-heading font-display text-3xl font-semibold tracking-tight md:text-5xl">
+            <div className="space-y-3">
+              <h2 className="theme-heading font-display text-4xl font-semibold tracking-tight md:text-[3.5rem] md:leading-[1.02]">
                 Move transports with a clearer
                 <span className="theme-gradient-text"> release lane</span>.
               </h2>
-              <p className="theme-body max-w-3xl text-sm leading-7 md:text-base">
+              <p className="theme-body max-w-3xl text-base leading-8 md:text-lg">
                 This screen is wired for SAP 2021-compatible monitoring first. It can run in mock mode today and switch to your SAP OData and action endpoints when those are ready.
               </p>
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="magnetic-child flex flex-wrap gap-2">
             <Button
               variant="outline"
               className="gap-2"
@@ -92,44 +92,44 @@ export function TransportsView() {
         </div>
       </section>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <Card className="glass-panel motion-tile stagger-in rounded-[1.5rem] border-white/50 bg-white/75">
+      <div className="grid gap-5 md:grid-cols-2 2xl:grid-cols-4">
+        <Card className="glass-panel motion-tile stagger-in rounded-[1.9rem] border-white/50 bg-white/75">
           <CardHeader className="pb-2">
-            <CardDescription>QA Queue</CardDescription>
-            <CardTitle className="text-3xl">{queuedQa}</CardTitle>
+            <CardDescription className="text-sm">QA Queue</CardDescription>
+            <CardTitle className="text-4xl">{queuedQa}</CardTitle>
           </CardHeader>
-          <CardContent className="theme-body text-xs">Transport requests waiting to enter or finish QA.</CardContent>
+          <CardContent className="theme-body text-sm leading-6">Transport requests waiting to enter or finish QA.</CardContent>
         </Card>
-        <Card className="glass-panel motion-tile stagger-in rounded-[1.5rem] border-white/50 bg-white/75" style={{ animationDelay: "80ms" }}>
+        <Card className="glass-panel motion-tile stagger-in rounded-[1.9rem] border-white/50 bg-white/75" style={{ animationDelay: "80ms" }}>
           <CardHeader className="pb-2">
-            <CardDescription>QA Imported</CardDescription>
-            <CardTitle className="text-3xl">{importedQa}</CardTitle>
+            <CardDescription className="text-sm">QA Imported</CardDescription>
+            <CardTitle className="text-4xl">{importedQa}</CardTitle>
           </CardHeader>
-          <CardContent className="theme-body text-xs">Requests already confirmed in the QA landscape.</CardContent>
+          <CardContent className="theme-body text-sm leading-6">Requests already confirmed in the QA landscape.</CardContent>
         </Card>
-        <Card className="glass-panel motion-tile stagger-in rounded-[1.5rem] border-white/50 bg-white/75" style={{ animationDelay: "160ms" }}>
+        <Card className="glass-panel motion-tile stagger-in rounded-[1.9rem] border-white/50 bg-white/75" style={{ animationDelay: "160ms" }}>
           <CardHeader className="pb-2">
-            <CardDescription>Prod Queue</CardDescription>
-            <CardTitle className="text-3xl">{queuedProd}</CardTitle>
+            <CardDescription className="text-sm">Prod Queue</CardDescription>
+            <CardTitle className="text-4xl">{queuedProd}</CardTitle>
           </CardHeader>
-          <CardContent className="theme-body text-xs">Requests staged for production import approval.</CardContent>
+          <CardContent className="theme-body text-sm leading-6">Requests staged for production import approval.</CardContent>
         </Card>
-        <Card className="glass-panel motion-tile stagger-in rounded-[1.5rem] border-white/50 bg-white/75" style={{ animationDelay: "240ms" }}>
+        <Card className="glass-panel motion-tile stagger-in rounded-[1.9rem] border-white/50 bg-white/75" style={{ animationDelay: "240ms" }}>
           <CardHeader className="pb-2">
-            <CardDescription>Prod Imported</CardDescription>
-            <CardTitle className="text-3xl">{importedProd}</CardTitle>
+            <CardDescription className="text-sm">Prod Imported</CardDescription>
+            <CardTitle className="text-4xl">{importedProd}</CardTitle>
           </CardHeader>
-          <CardContent className="theme-body text-xs">Requests that have completed the production hop.</CardContent>
+          <CardContent className="theme-body text-sm leading-6">Requests that have completed the production hop.</CardContent>
         </Card>
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-[1.7fr_0.9fr]">
-        <Card className="glass-panel motion-tile stagger-in rounded-[1.75rem] border-white/50 bg-white/75" style={{ animationDelay: "320ms" }}>
+      <div className="grid gap-5 xl:grid-cols-[1.65fr_0.95fr]">
+        <Card className="glass-panel motion-tile stagger-in rounded-[1.9rem] border-white/50 bg-white/75" style={{ animationDelay: "320ms" }}>
           <CardHeader className="space-y-4">
             <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
               <div>
-                <CardTitle>Transport Requests</CardTitle>
-                <CardDescription>Move controls stay server-side and audit every action.</CardDescription>
+                <CardTitle className="text-base">Transport Requests</CardTitle>
+                <CardDescription className="text-sm">Move controls stay server-side and audit every action.</CardDescription>
               </div>
               <div className="relative w-full max-w-sm">
                 <Search className="theme-subtle pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2" />
@@ -162,53 +162,53 @@ export function TransportsView() {
                     Array.from({ length: 6 }).map((_, index) => (
                       <tr key={index} className="border-b border-border/60">
                         {Array.from({ length: 8 }).map((__, column) => (
-                          <td key={column} className="px-3 py-4">
-                            <div className="h-3 animate-pulse rounded bg-muted" />
+                          <td key={column} className="px-4 py-5">
+                            <div className="h-4 animate-pulse rounded bg-muted" />
                           </td>
                         ))}
                       </tr>
                     ))
                   ) : filtered.length === 0 ? (
                     <tr>
-                      <td colSpan={8} className="theme-body px-6 py-12 text-center text-sm">
+                      <td colSpan={8} className="theme-body px-6 py-14 text-center text-base">
                         No transport requests found yet. Run a sync after configuring the SAP endpoint, or keep mock mode on to test the flow.
                       </td>
                     </tr>
                   ) : (
                     filtered.map((transport) => (
                       <tr key={transport.id} className="table-row-motion border-b border-border/60 align-top">
-                        <td className="px-3 py-4">
-                          <div className="theme-heading font-mono text-xs">{transport.trNumber}</div>
-                          <div className="theme-body mt-1 text-[11px]">{transport.requestStatus ?? "Unknown status"}</div>
+                        <td className="px-4 py-5">
+                          <div className="theme-heading font-mono text-sm">{transport.trNumber}</div>
+                          <div className="theme-body mt-1 text-xs">{transport.requestStatus ?? "Unknown status"}</div>
                         </td>
-                        <td className="theme-body px-3 py-4 text-xs" title={transport.description ?? ""}>
+                        <td className="theme-body px-4 py-5 text-sm leading-6" title={transport.description ?? ""}>
                           {truncate(transport.description ?? "No description available", 70)}
                         </td>
-                        <td className="theme-body px-3 py-4 text-xs">
+                        <td className="theme-body px-4 py-5 text-sm">
                           <div>{transport.owner ?? "—"}</div>
-                          <div className="theme-subtle mt-1 text-[11px]">{transport.targetSystem ?? "No target"}</div>
+                          <div className="theme-subtle mt-1 text-xs">{transport.targetSystem ?? "No target"}</div>
                         </td>
-                        <td className="px-3 py-4">
+                        <td className="px-4 py-5">
                           <StatusBadge value={humanizeStatus(transport.qaStatus)} />
-                          <div className="theme-subtle mt-2 text-[11px]">{fmtDate(transport.qaImportedAt)}</div>
+                          <div className="theme-subtle mt-2 text-xs">{fmtDate(transport.qaImportedAt)}</div>
                         </td>
-                        <td className="px-3 py-4">
+                        <td className="px-4 py-5">
                           <StatusBadge value={humanizeStatus(transport.prodStatus)} />
-                          <div className="theme-subtle mt-2 text-[11px]">{fmtDate(transport.prodImportedAt)}</div>
+                          <div className="theme-subtle mt-2 text-xs">{fmtDate(transport.prodImportedAt)}</div>
                         </td>
-                        <td className="px-3 py-4">
+                        <td className="px-4 py-5">
                           <StatusBadge value={humanizeStatus(transport.prodApprovalStatus)} />
-                          <div className="theme-subtle mt-2 text-[11px]">
+                          <div className="theme-subtle mt-2 text-xs leading-5">
                             {transport.prodApprovalRequestedAt
                               ? `Requested ${fmtDate(transport.prodApprovalRequestedAt)}`
                               : "No approval requested"}
                           </div>
                         </td>
-                        <td className="theme-subtle px-3 py-4 text-[11px]">
+                        <td className="theme-subtle px-4 py-5 text-xs">
                           {fmtDate(transport.lastSyncedAt)}
                         </td>
-                        <td className="px-3 py-4">
-                          <div className="flex flex-wrap gap-2">
+                        <td className="px-4 py-5">
+                          <div className="flex min-w-[14rem] flex-wrap gap-2">
                             <Button
                               size="sm"
                               variant="outline"
@@ -274,7 +274,7 @@ export function TransportsView() {
           </CardContent>
         </Card>
 
-        <Card className="glass-panel motion-tile stagger-in rounded-[1.75rem] border-white/50 bg-white/75" style={{ animationDelay: "420ms" }}>
+        <Card className="glass-panel motion-tile stagger-in rounded-[1.9rem] border-white/50 bg-white/75" style={{ animationDelay: "420ms" }}>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <ShieldCheck className="h-4 w-4 text-emerald-600" />
@@ -287,16 +287,16 @@ export function TransportsView() {
               <p className="theme-body text-sm">No transport actions recorded yet.</p>
             ) : (
               recentActions.map((action) => (
-                <div key={action.id} className="motion-tile rounded-2xl border border-border/70 bg-white/70 p-3">
+                <div key={action.id} className="motion-tile rounded-[1.4rem] border border-border/70 bg-white/70 p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <div className="theme-heading font-mono text-xs">{action.trNumber}</div>
-                      <div className="theme-body mt-1 text-xs">{action.actionType.replaceAll("_", " ")}</div>
+                      <div className="theme-heading font-mono text-sm">{action.trNumber}</div>
+                      <div className="theme-body mt-1 text-sm">{action.actionType.replaceAll("_", " ")}</div>
                     </div>
                     <StatusBadge value={action.actionStatus} />
                   </div>
-                  <p className="theme-body mt-2 text-xs">{action.message ?? "No message recorded"}</p>
-                  <div className="theme-subtle mt-2 text-[11px]">{fmtDate(action.createdAt)}</div>
+                  <p className="theme-body mt-3 text-sm leading-6">{action.message ?? "No message recorded"}</p>
+                  <div className="theme-subtle mt-3 text-xs">{fmtDate(action.createdAt)}</div>
                 </div>
               ))
             )}
