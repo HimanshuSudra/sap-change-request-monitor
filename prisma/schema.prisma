@@ -54,6 +54,13 @@ enum TransportActionStatus {
   FAILED
 }
 
+enum TransportApprovalStatus {
+  NOT_REQUESTED
+  PENDING
+  APPROVED
+  DECLINED
+}
+
 // ── Change Record ──────────────────────────────────────────────────
 
 model ChangeRecord {
@@ -190,6 +197,12 @@ model TransportRequest {
   prodStatus        TransportStageStatus @default(UNKNOWN)
   prodImportedAt    DateTime?
   prodReturnCode    String?
+  prodApprovalStatus     TransportApprovalStatus @default(NOT_REQUESTED)
+  prodApprovalRequestedAt DateTime?
+  prodApprovalRequestedBy String?
+  prodApprovalDecisionAt  DateTime?
+  prodApprovalDecisionBy  String?
+  prodApprovalEmailSentAt DateTime?
   lastAction        String?
   lastSyncedAt      DateTime?
   sapUpdatedAt      DateTime?

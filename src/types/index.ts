@@ -12,11 +12,12 @@ import {
   TransportStageStatus,
   TransportActionStatus,
   TransportActionType,
+  TransportApprovalStatus,
 } from "@prisma/client";
 
 // ── Re-export Prisma enums ────────────────────────────────────────
 export { TrMovedBy, YesNoNa };
-export { TransportStageStatus, TransportActionStatus, TransportActionType };
+export { TransportStageStatus, TransportActionStatus, TransportActionType, TransportApprovalStatus };
 
 // ── Core record type (what the API returns) ───────────────────────
 export type ChangeRecordWithLogs = ChangeRecord & {
@@ -215,6 +216,12 @@ export interface TransportRequestDto {
   prodStatus: TransportStageStatus;
   prodImportedAt: string | null;
   prodReturnCode: string | null;
+  prodApprovalStatus: TransportApprovalStatus;
+  prodApprovalRequestedAt: string | null;
+  prodApprovalRequestedBy: string | null;
+  prodApprovalDecisionAt: string | null;
+  prodApprovalDecisionBy: string | null;
+  prodApprovalEmailSentAt: string | null;
   lastAction: string | null;
   lastSyncedAt: string | null;
   sapUpdatedAt: string | null;
@@ -250,4 +257,12 @@ export interface TransportMoveResult {
   target: "QA" | "PROD";
   status: TransportActionStatus;
   message: string;
+  mailToUrl?: string;
+}
+
+export interface TransportApprovalResult {
+  trNumber: string;
+  approvalStatus: TransportApprovalStatus;
+  message: string;
+  mailToUrl?: string;
 }

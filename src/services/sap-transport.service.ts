@@ -1,5 +1,6 @@
 import {
   Prisma,
+  TransportApprovalStatus,
   TransportActionStatus,
   TransportActionType,
   TransportStageStatus,
@@ -8,11 +9,15 @@ import prisma from "@/lib/prisma";
 import { toTransportActionDto, toTransportDto } from "@/lib/utils";
 import {
   TransportListResponse,
+  TransportApprovalResult,
   TransportMoveResult,
   TransportSyncResult,
 } from "@/types";
 
 type TargetEnvironment = "QA" | "PROD";
+type ApprovalDecision = "APPROVE" | "DECLINE";
+
+const PROD_APPROVER_EMAIL = "hsudra@gulbrandsen.com";
 
 interface NormalizedTransport {
   trNumber: string;
@@ -206,6 +211,7 @@ async function upsertTransports(transports: NormalizedTransport[]): Promise<numb
         prodStatus: transport.prodStatus ?? TransportStageStatus.UNKNOWN,
         prodImportedAt: transport.prodImportedAt ?? null,
         prodReturnCode: transport.prodReturnCode ?? null,
+        prodApprovalStatus: TransportApprovalStatus.NOT_REQUESTED,
         lastAction: "SYNC",
         lastSyncedAt: new Date(),
         sapUpdatedAt: transport.sapUpdatedAt ?? null,
@@ -270,12 +276,37 @@ async function createActionAudit(params: {
   });
 }
 
+function buildApprovalMailToUrl(params: {
+  trNumber: string;
+  description: string | null;
+  owner: string | null;
+}): string {
+  const subject = `Production approval requested for ${params.trNumber}`;
+  const body = [
+    "Hello Himanshu,",
+    "",
+    "A production import approval has been requested from TRMS.",
+    "",
+    `Transport Request: ${params.trNumber}`,
+    `Owner: ${params.owner ?? "Unknown"}`,
+    `Description: ${params.description ?? "No description available"}`,
+    "",
+    "Please review the request in PCMS TRMS and choose Approve or Decline.",
+  ].join("\n");
+
+  return `mailto:${encodeURIComponent(PROD_APPROVER_EMAIL)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
 async function runMockMove(trNumber: string, target: TargetEnvironment): Promise<TransportMoveResult> {
   const now = new Date();
   const transport = await prisma.transportRequest.findUnique({ where: { trNumber } });
 
   if (!transport) {
     throw new Error(`Transport not found: ${trNumber}`);
+  }
+
+  if (target === "PROD" && transport.prodApprovalStatus !== TransportApprovalStatus.APPROVED) {
+    throw new Error(`Production approval is required before importing ${trNumber}`);
   }
 
   const updateData =
@@ -287,6 +318,7 @@ async function runMockMove(trNumber: string, target: TargetEnvironment): Promise
         }
       : {
           prodStatus: TransportStageStatus.PROD_QUEUE,
+          prodApprovalStatus: TransportApprovalStatus.APPROVED,
           lastAction: "MOVE_TO_PROD",
           lastSyncedAt: now,
         };
@@ -318,6 +350,11 @@ async function runSapMove(trNumber: string, target: TargetEnvironment): Promise<
   const url = process.env.SAP_TR_ACTION_URL;
   if (!url) {
     throw new Error("SAP_TR_ACTION_URL is not configured");
+  }
+
+  const existingTransport = await prisma.transportRequest.findUnique({ where: { trNumber } });
+  if (target === "PROD" && existingTransport?.prodApprovalStatus !== TransportApprovalStatus.APPROVED) {
+    throw new Error(`Production approval is required before importing ${trNumber}`);
   }
 
   const payload = { trNumber, target };
@@ -376,6 +413,103 @@ async function runSapMove(trNumber: string, target: TargetEnvironment): Promise<
     target,
     status: TransportActionStatus.SUCCESS,
     message: `SAP ${target} move request submitted successfully`,
+  };
+}
+
+export async function requestProductionApproval(trNumber: string): Promise<TransportApprovalResult> {
+  const transport = await prisma.transportRequest.findUnique({ where: { trNumber } });
+
+  if (!transport) {
+    throw new Error(`Transport not found: ${trNumber}`);
+  }
+
+  const now = new Date();
+  const mailToUrl = buildApprovalMailToUrl({
+    trNumber,
+    description: transport.description,
+    owner: transport.owner,
+  });
+
+  await prisma.transportRequest.update({
+    where: { trNumber },
+    data: {
+      prodApprovalStatus: TransportApprovalStatus.PENDING,
+      prodApprovalRequestedAt: now,
+      prodApprovalRequestedBy: "PCMS Demo User",
+      prodApprovalDecisionAt: null,
+      prodApprovalDecisionBy: null,
+      prodApprovalEmailSentAt: now,
+      lastAction: "REQUEST_PROD_APPROVAL",
+      lastSyncedAt: now,
+    },
+  });
+
+  await createActionAudit({
+    trNumber,
+    actionType: TransportActionType.MOVE_TO_PROD,
+    actionStatus: TransportActionStatus.PENDING,
+    environment: "PROD",
+    message: `Production approval requested and email prepared for ${PROD_APPROVER_EMAIL}`,
+    requestBody: { trNumber, approver: PROD_APPROVER_EMAIL },
+    responseBody: { mailToUrl, requestedAt: now.toISOString() },
+  });
+
+  return {
+    trNumber,
+    approvalStatus: TransportApprovalStatus.PENDING,
+    message: `Approval request created. Email prepared for ${PROD_APPROVER_EMAIL}.`,
+    mailToUrl,
+  };
+}
+
+export async function reviewProductionApproval(
+  trNumber: string,
+  decision: ApprovalDecision
+): Promise<TransportApprovalResult> {
+  const transport = await prisma.transportRequest.findUnique({ where: { trNumber } });
+
+  if (!transport) {
+    throw new Error(`Transport not found: ${trNumber}`);
+  }
+
+  const now = new Date();
+  const approvalStatus =
+    decision === "APPROVE" ? TransportApprovalStatus.APPROVED : TransportApprovalStatus.DECLINED;
+
+  await prisma.transportRequest.update({
+    where: { trNumber },
+    data: {
+      prodApprovalStatus: approvalStatus,
+      prodApprovalDecisionAt: now,
+      prodApprovalDecisionBy: "hsudra@gulbrandsen.com",
+      lastAction: decision === "APPROVE" ? "PROD_APPROVED" : "PROD_DECLINED",
+      lastSyncedAt: now,
+      ...(decision === "DECLINE"
+        ? { prodStatus: TransportStageStatus.UNKNOWN }
+        : {}),
+    },
+  });
+
+  await createActionAudit({
+    trNumber,
+    actionType: TransportActionType.MOVE_TO_PROD,
+    actionStatus: decision === "APPROVE" ? TransportActionStatus.SUCCESS : TransportActionStatus.FAILED,
+    environment: "PROD",
+    message:
+      decision === "APPROVE"
+        ? `Production approval granted by ${PROD_APPROVER_EMAIL}`
+        : `Production approval declined by ${PROD_APPROVER_EMAIL}`,
+    requestBody: { trNumber, decision },
+    responseBody: { decidedAt: now.toISOString() },
+  });
+
+  return {
+    trNumber,
+    approvalStatus,
+    message:
+      decision === "APPROVE"
+        ? "Production request approved. Import to production is now enabled."
+        : "Production request declined. Import to production remains blocked.",
   };
 }
 

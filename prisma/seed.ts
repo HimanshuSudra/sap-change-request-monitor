@@ -1,7 +1,13 @@
 // prisma/seed.ts
 // Run: npx prisma db seed
 
-import { PrismaClient, YesNoNa, TrMovedBy } from "@prisma/client";
+import {
+  PrismaClient,
+  YesNoNa,
+  TrMovedBy,
+  TransportApprovalStatus,
+  TransportStageStatus,
+} from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -168,6 +174,78 @@ async function main() {
   }
 
   console.log(`✅ Seeded ${sampleRecords.length} sample change records`);
+
+  const sampleTransports = [
+    {
+      trNumber: "DEVK900101",
+      description: "Vendor aging report moved for QA validation",
+      owner: "Manoj",
+      requestType: "Workbench",
+      requestStatus: "Released",
+      developmentClass: "ZFI_REPORTS",
+      targetSystem: "QAS",
+      sourceSystem: "DEV",
+      sourceClient: "100",
+      qaStatus: TransportStageStatus.QA_IMPORTED,
+      qaImportedAt: new Date("2026-03-15T10:30:00Z"),
+      prodStatus: TransportStageStatus.UNKNOWN,
+      prodApprovalStatus: TransportApprovalStatus.NOT_REQUESTED,
+      lastAction: "SYNC",
+      lastSyncedAt: new Date("2026-03-27T08:30:00Z"),
+    },
+    {
+      trNumber: "DEVK900102",
+      description: "Material master enhancement waiting for production approval",
+      owner: "Lokesh",
+      requestType: "Workbench",
+      requestStatus: "Released",
+      developmentClass: "ZMM_ENH",
+      targetSystem: "PRD",
+      sourceSystem: "DEV",
+      sourceClient: "100",
+      qaStatus: TransportStageStatus.QA_IMPORTED,
+      qaImportedAt: new Date("2026-03-20T09:15:00Z"),
+      prodStatus: TransportStageStatus.UNKNOWN,
+      prodApprovalStatus: TransportApprovalStatus.PENDING,
+      prodApprovalRequestedAt: new Date("2026-03-27T09:30:00Z"),
+      prodApprovalRequestedBy: "PCMS Demo User",
+      prodApprovalEmailSentAt: new Date("2026-03-27T09:31:00Z"),
+      lastAction: "REQUEST_PROD_APPROVAL",
+      lastSyncedAt: new Date("2026-03-27T09:31:00Z"),
+    },
+    {
+      trNumber: "DEVK900103",
+      description: "Plant configuration approved and ready for production import",
+      owner: "Himanshu",
+      requestType: "Customizing",
+      requestStatus: "Released",
+      developmentClass: "ZPP_CFG",
+      targetSystem: "PRD",
+      sourceSystem: "DEV",
+      sourceClient: "100",
+      qaStatus: TransportStageStatus.QA_IMPORTED,
+      qaImportedAt: new Date("2026-03-24T12:00:00Z"),
+      prodStatus: TransportStageStatus.UNKNOWN,
+      prodApprovalStatus: TransportApprovalStatus.APPROVED,
+      prodApprovalRequestedAt: new Date("2026-03-26T11:00:00Z"),
+      prodApprovalRequestedBy: "PCMS Demo User",
+      prodApprovalDecisionAt: new Date("2026-03-26T15:00:00Z"),
+      prodApprovalDecisionBy: "hsudra@gulbrandsen.com",
+      prodApprovalEmailSentAt: new Date("2026-03-26T11:01:00Z"),
+      lastAction: "PROD_APPROVED",
+      lastSyncedAt: new Date("2026-03-26T15:00:00Z"),
+    },
+  ];
+
+  for (const transport of sampleTransports) {
+    await prisma.transportRequest.upsert({
+      where: { trNumber: transport.trNumber },
+      update: transport,
+      create: transport,
+    });
+  }
+
+  console.log(`✅ Seeded ${sampleTransports.length} sample transport requests`);
   console.log("🎉 Seeding complete!");
 }
 

@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import {
   ApiSuccess,
+  TransportApprovalResult,
   TransportListResponse,
   TransportMoveResult,
   TransportSyncResult,
@@ -66,6 +67,47 @@ export function useMoveTransport(target: "QA" | "PROD") {
     },
     onError: (err: Error) => {
       toast.error(err.message || `Move to ${target} failed`);
+    },
+  });
+}
+
+export function useRequestProdApproval() {
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: (trNumber: string) =>
+      apiFetch<TransportApprovalResult>(
+        `/api/transports/${encodeURIComponent(trNumber)}/request-prod-approval`,
+        { method: "POST" }
+      ),
+    onSuccess: (result) => {
+      qc.invalidateQueries({ queryKey: transportKeys.all });
+      toast.success(result.message);
+      if (result.mailToUrl) {
+        window.open(result.mailToUrl, "_blank");
+      }
+    },
+    onError: (err: Error) => {
+      toast.error(err.message || "Could not request production approval");
+    },
+  });
+}
+
+export function useReviewProdApproval(decision: "APPROVE" | "DECLINE") {
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: (trNumber: string) =>
+      apiFetch<TransportApprovalResult>(
+        `/api/transports/${encodeURIComponent(trNumber)}/${decision === "APPROVE" ? "approve-prod" : "decline-prod"}`,
+        { method: "POST" }
+      ),
+    onSuccess: (result) => {
+      qc.invalidateQueries({ queryKey: transportKeys.all });
+      toast.success(result.message);
+    },
+    onError: (err: Error) => {
+      toast.error(err.message || "Could not update production approval");
     },
   });
 }

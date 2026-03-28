@@ -29,6 +29,9 @@ export function toTransportDto(r: TransportRequest): TransportRequestDto {
     updatedAt: r.updatedAt.toISOString(),
     qaImportedAt: r.qaImportedAt?.toISOString() ?? null,
     prodImportedAt: r.prodImportedAt?.toISOString() ?? null,
+    prodApprovalRequestedAt: r.prodApprovalRequestedAt?.toISOString() ?? null,
+    prodApprovalDecisionAt: r.prodApprovalDecisionAt?.toISOString() ?? null,
+    prodApprovalEmailSentAt: r.prodApprovalEmailSentAt?.toISOString() ?? null,
     lastSyncedAt: r.lastSyncedAt?.toISOString() ?? null,
     sapUpdatedAt: r.sapUpdatedAt?.toISOString() ?? null,
   };

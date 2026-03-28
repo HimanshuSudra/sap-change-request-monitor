@@ -1,8 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { RefreshCcw, Rocket, Search, ShieldCheck, UploadCloud } from "lucide-react";
-import { useMoveTransport, useSyncTransports, useTransports } from "@/hooks/useTransports";
+import { CheckCheck, MailPlus, RefreshCcw, Rocket, Search, ShieldCheck, UploadCloud, XCircle } from "lucide-react";
+import {
+  useMoveTransport,
+  useRequestProdApproval,
+  useReviewProdApproval,
+  useSyncTransports,
+  useTransports,
+} from "@/hooks/useTransports";
 import { fmtDate, truncate } from "@/lib/utils";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Button } from "@/components/ui/button";
@@ -20,6 +26,9 @@ export function TransportsView() {
   const syncMutation = useSyncTransports();
   const moveQaMutation = useMoveTransport("QA");
   const moveProdMutation = useMoveTransport("PROD");
+  const requestApprovalMutation = useRequestProdApproval();
+  const approveProdMutation = useReviewProdApproval("APPROVE");
+  const declineProdMutation = useReviewProdApproval("DECLINE");
 
   const transports = data?.transports ?? [];
   const recentActions = data?.recentActions ?? [];
@@ -139,6 +148,7 @@ export function TransportsView() {
                     <th className="px-3 py-3">Owner</th>
                     <th className="px-3 py-3">QA</th>
                     <th className="px-3 py-3">Prod</th>
+                    <th className="px-3 py-3">Approval</th>
                     <th className="px-3 py-3">Last Sync</th>
                     <th className="px-3 py-3">Actions</th>
                   </tr>
@@ -147,7 +157,7 @@ export function TransportsView() {
                   {isLoading ? (
                     Array.from({ length: 6 }).map((_, index) => (
                       <tr key={index} className="border-b border-border/60">
-                        {Array.from({ length: 7 }).map((__, column) => (
+                        {Array.from({ length: 8 }).map((__, column) => (
                           <td key={column} className="px-3 py-4">
                             <div className="h-3 animate-pulse rounded bg-muted" />
                           </td>
@@ -156,7 +166,7 @@ export function TransportsView() {
                     ))
                   ) : filtered.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="px-6 py-12 text-center text-sm text-slate-500">
+                      <td colSpan={8} className="px-6 py-12 text-center text-sm text-slate-500">
                         No transport requests found yet. Run a sync after configuring the SAP endpoint, or keep mock mode on to test the flow.
                       </td>
                     </tr>
@@ -182,6 +192,14 @@ export function TransportsView() {
                           <StatusBadge value={humanizeStatus(transport.prodStatus)} />
                           <div className="mt-2 text-[11px] text-slate-500">{fmtDate(transport.prodImportedAt)}</div>
                         </td>
+                        <td className="px-3 py-4">
+                          <StatusBadge value={humanizeStatus(transport.prodApprovalStatus)} />
+                          <div className="mt-2 text-[11px] text-slate-500">
+                            {transport.prodApprovalRequestedAt
+                              ? `Requested ${fmtDate(transport.prodApprovalRequestedAt)}`
+                              : "No approval requested"}
+                          </div>
+                        </td>
                         <td className="px-3 py-4 text-[11px] text-slate-500">
                           {fmtDate(transport.lastSyncedAt)}
                         </td>
@@ -197,14 +215,49 @@ export function TransportsView() {
                               <UploadCloud className="h-3.5 w-3.5" />
                               Move to QA
                             </Button>
+                            {transport.prodApprovalStatus === "NOT_REQUESTED" || transport.prodApprovalStatus === "DECLINED" ? (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="gap-1 text-xs"
+                                onClick={() => requestApprovalMutation.mutate(transport.trNumber)}
+                                disabled={requestApprovalMutation.isPending}
+                              >
+                                <MailPlus className="h-3.5 w-3.5" />
+                                Request Approval
+                              </Button>
+                            ) : null}
+                            {transport.prodApprovalStatus === "PENDING" ? (
+                              <>
+                                <Button
+                                  size="sm"
+                                  className="gap-1 text-xs"
+                                  onClick={() => approveProdMutation.mutate(transport.trNumber)}
+                                  disabled={approveProdMutation.isPending}
+                                >
+                                  <CheckCheck className="h-3.5 w-3.5" />
+                                  Approve
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="gap-1 text-xs"
+                                  onClick={() => declineProdMutation.mutate(transport.trNumber)}
+                                  disabled={declineProdMutation.isPending}
+                                >
+                                  <XCircle className="h-3.5 w-3.5" />
+                                  Decline
+                                </Button>
+                              </>
+                            ) : null}
                             <Button
                               size="sm"
                               className="gap-1 text-xs"
                               onClick={() => moveProdMutation.mutate(transport.trNumber)}
-                              disabled={moveProdMutation.isPending}
+                              disabled={moveProdMutation.isPending || transport.prodApprovalStatus !== "APPROVED"}
                             >
                               <Rocket className="h-3.5 w-3.5" />
-                              Move to Prod
+                              Import to Prod
                             </Button>
                           </div>
                         </td>
