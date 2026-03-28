@@ -78,7 +78,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "theme-sidebar fixed inset-y-0 left-0 z-30 flex w-72 flex-col overflow-hidden border-r border-white/10 text-white transition-transform duration-300 ease-in-out lg:static lg:translate-x-0",
+        "theme-sidebar fixed inset-y-4 left-4 z-30 flex w-[19rem] flex-col overflow-hidden rounded-[2rem] border border-white/10 text-white shadow-[0_30px_80px_rgba(2,6,23,0.45)] transition-transform duration-300 ease-in-out",
         open ? "translate-x-0" : "-translate-x-full"
       )}
     >
@@ -87,7 +87,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
         <div className="absolute bottom-12 right-[-2rem] h-40 w-40 rounded-full bg-blue-500/10 blur-3xl" />
       </div>
       {/* Logo */}
-      <div className="relative flex items-center gap-4 border-b border-white/10 px-6 py-7">
+      <div className="relative flex items-center gap-4 border-b border-white/10 px-6 py-6">
         <div className="glow-ring flex h-12 w-12 items-center justify-center rounded-[1.35rem] bg-gradient-to-br from-blue-500 to-cyan-400 shadow-[0_10px_30px_rgba(14,165,233,0.28)]">
           <TableProperties className="h-5 w-5 text-white" />
         </div>
@@ -98,16 +98,13 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           </div>
         </div>
         {/* Mobile close */}
-        <button
-          className="ml-auto lg:hidden text-slate-400 hover:text-white"
-          onClick={onClose}
-        >
+        <button className="ml-auto text-slate-400 hover:text-white" onClick={onClose}>
           <X className="h-5 w-5" />
         </button>
       </div>
 
       {/* Nav */}
-      <nav className="relative flex-1 space-y-1 overflow-y-auto px-4 py-6">
+      <nav className="relative flex-1 space-y-1 overflow-y-auto px-4 py-5">
         {NAV_ITEMS.map((item) => {
           const showSection = item.section && item.section !== lastSection;
           if (item.section) lastSection = item.section;
@@ -144,7 +141,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
       </nav>
 
       {/* Footer */}
-      <div className="relative border-t border-white/10 px-5 py-6">
+      <div className="relative border-t border-white/10 px-5 py-5">
         <div className="glass-panel rounded-[1.6rem] border-white/10 bg-white/5 px-4 py-4 text-white">
           <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 text-sm font-bold text-white">

@@ -73,6 +73,8 @@ export function useDashboardStats() {
     queryFn: () =>
       apiFetch<import("@/types").DashboardStats>("/api/dashboard"),
     staleTime: 60_000,
+    refetchInterval: 45_000,
+    refetchOnWindowFocus: true,
   });
 }
 
@@ -84,6 +86,8 @@ export function useChartData(year?: string) {
         `/api/charts${year ? `?year=${year}` : ""}`
       ),
     staleTime: 60_000,
+    refetchInterval: 60_000,
+    refetchOnWindowFocus: true,
   });
 }
 

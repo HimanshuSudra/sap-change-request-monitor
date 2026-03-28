@@ -4,7 +4,7 @@
 import { useState, useCallback } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
-import { Menu, Search, RefreshCw, LogOut, SlidersHorizontal } from "lucide-react";
+import { Menu, Search, RefreshCw, LogOut, SlidersHorizontal, Activity } from "lucide-react";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 import { signOut, useSession } from "next-auth/react";
@@ -77,12 +77,11 @@ export function Topbar({ onMenuClick }: TopbarProps) {
 
   return (
     <header className="glass-panel relative z-10 mx-4 mt-4 flex h-[4.75rem] flex-shrink-0 items-center gap-4 rounded-[2rem] border-white/40 px-5 md:mx-6 md:px-7">
-      {/* Mobile hamburger */}
       <button
-        className="theme-text-muted hover:text-foreground lg:hidden"
+        className="surface-panel-strong theme-text-muted flex h-11 w-11 items-center justify-center rounded-2xl transition-colors hover:text-foreground"
         onClick={onMenuClick}
       >
-        <Menu className="h-5 w-5" />
+        <Menu className="h-4 w-4" />
       </button>
 
       {/* Page title */}
@@ -99,6 +98,15 @@ export function Topbar({ onMenuClick }: TopbarProps) {
 
       {/* Right section */}
       <div className="flex items-center gap-2">
+        <div className="surface-panel-strong hidden h-11 items-center gap-2 rounded-2xl px-4 text-sm font-medium text-emerald-300 xl:flex">
+          <span className="relative flex h-2.5 w-2.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/70" />
+            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400" />
+          </span>
+          <Activity className="h-4 w-4 text-emerald-300" />
+          Live Control Plane
+        </div>
+
         <div className="relative">
           <button
             type="button"

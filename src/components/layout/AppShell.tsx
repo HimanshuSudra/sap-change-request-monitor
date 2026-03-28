@@ -24,7 +24,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-20 bg-black/40 lg:hidden"
+          className="fixed inset-0 z-20 bg-black/46 backdrop-blur-[2px]"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -35,8 +35,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Main area */}
       <div className="relative z-10 flex flex-1 flex-col overflow-hidden">
         <Topbar onMenuClick={() => setSidebarOpen(true)} />
-        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
-          {children}
+        <main className="flex-1 overflow-y-auto px-4 pb-6 pt-2 md:px-6 md:pb-8 lg:px-8 lg:pb-10">
+          <div className="mx-auto flex w-full max-w-[1680px] flex-col gap-8">
+            {children}
+          </div>
         </main>
       </div>
     </div>

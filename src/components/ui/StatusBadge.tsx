@@ -2,13 +2,13 @@
 import { cn, statusVariant } from "@/lib/utils";
 
 const VARIANT_CLASSES = {
-  success: "bg-green-50 text-green-700 border-green-200 ring-green-100",
-  info:    "bg-blue-50 text-blue-700 border-blue-200 ring-blue-100",
-  warning: "bg-amber-50 text-amber-700 border-amber-200 ring-amber-100",
-  error:   "bg-red-50 text-red-700 border-red-200 ring-red-100",
-  violet:  "bg-violet-50 text-violet-700 border-violet-200 ring-violet-100",
-  cyan:    "bg-cyan-50 text-cyan-700 border-cyan-200 ring-cyan-100",
-  secondary:"bg-slate-50 text-slate-600 border-slate-200 ring-slate-100",
+  success: "border-green-200 bg-green-50 text-green-700 ring-green-100 dark:border-green-400/30 dark:bg-green-500/12 dark:text-green-100",
+  info: "border-blue-200 bg-blue-50 text-blue-700 ring-blue-100 dark:border-blue-400/30 dark:bg-blue-500/12 dark:text-blue-100",
+  warning: "border-amber-200 bg-amber-50 text-amber-700 ring-amber-100 dark:border-amber-400/30 dark:bg-amber-500/12 dark:text-amber-100",
+  error: "border-red-200 bg-red-50 text-red-700 ring-red-100 dark:border-red-400/30 dark:bg-red-500/12 dark:text-red-100",
+  violet: "border-violet-200 bg-violet-50 text-violet-700 ring-violet-100 dark:border-violet-400/30 dark:bg-violet-500/12 dark:text-violet-100",
+  cyan: "border-cyan-200 bg-cyan-50 text-cyan-700 ring-cyan-100 dark:border-cyan-400/30 dark:bg-cyan-500/12 dark:text-cyan-100",
+  secondary: "border-slate-200 bg-slate-50 text-slate-600 ring-slate-100 dark:border-slate-400/25 dark:bg-slate-500/10 dark:text-slate-100",
 };
 
 const DOT_CLASSES = {

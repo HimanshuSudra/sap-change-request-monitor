@@ -1,12 +1,11 @@
-// src/components/dashboard/KpiGrid.tsx
 "use client";
 
 import { DashboardStats } from "@/types";
 import { clearPointerGlow, cn, trackPointerGlow } from "@/lib/utils";
 import {
   LayoutGrid,
-  Clock,
-  CheckCircle2,
+  Clock3,
+  BadgeCheck,
   Code2,
   Settings2,
   FileWarning,
@@ -27,25 +26,25 @@ const KPI_CONFIG: KpiConfig[] = [
   {
     key: "total",
     label: "Total Requests",
-    sub: "All records",
+    sub: "All indexed records",
     icon: LayoutGrid,
-    colorClass: "border border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-400/30 dark:bg-blue-500/16 dark:text-blue-100",
+    colorClass: "border border-cyan-300/20 bg-cyan-400/12 text-cyan-100",
   },
   {
     key: "open",
     label: "Open",
     sub: "Awaiting action",
-    icon: Clock,
-    colorClass: "border border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-400/30 dark:bg-amber-500/16 dark:text-amber-100",
+    icon: Clock3,
+    colorClass: "border border-amber-300/20 bg-amber-400/12 text-amber-100",
     filterField: "status",
     filterValue: "Open",
   },
   {
     key: "closed",
     label: "Closed",
-    sub: "Completed",
-    icon: CheckCircle2,
-    colorClass: "border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-400/30 dark:bg-emerald-500/16 dark:text-emerald-100",
+    sub: "Completed or signed off",
+    icon: BadgeCheck,
+    colorClass: "border border-emerald-300/20 bg-emerald-400/12 text-emerald-100",
     filterField: "status",
     filterValue: "Closed",
     showProgress: true,
@@ -53,27 +52,27 @@ const KPI_CONFIG: KpiConfig[] = [
   {
     key: "dev",
     label: "Development",
-    sub: "Dev type requests",
+    sub: "Engineering work items",
     icon: Code2,
-    colorClass: "border border-violet-200 bg-violet-50 text-violet-700 dark:border-violet-400/30 dark:bg-violet-500/16 dark:text-violet-100",
+    colorClass: "border border-violet-300/20 bg-violet-400/12 text-violet-100",
     filterField: "typeOfRequest",
     filterValue: "Development",
   },
   {
     key: "configuration",
     label: "Configuration",
-    sub: "Config type requests",
+    sub: "Functional configuration work",
     icon: Settings2,
-    colorClass: "border border-cyan-200 bg-cyan-50 text-cyan-700 dark:border-cyan-400/30 dark:bg-cyan-500/16 dark:text-cyan-100",
+    colorClass: "border border-sky-300/20 bg-sky-400/12 text-sky-100",
     filterField: "typeOfRequest",
     filterValue: "Configuration",
   },
   {
     key: "pendingDocs",
     label: "Pending Docs",
-    sub: "Missing document links",
+    sub: "Missing evidence or links",
     icon: FileWarning,
-    colorClass: "border border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-400/30 dark:bg-rose-500/16 dark:text-rose-100",
+    colorClass: "border border-rose-300/20 bg-rose-400/12 text-rose-100",
   },
 ];
 
@@ -86,74 +85,63 @@ interface KpiGridProps {
 export function KpiGrid({ stats, isLoading, onFilter }: KpiGridProps) {
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div
-            key={i}
-            className="glass-panel h-44 animate-pulse rounded-[1.9rem]"
-          />
+          <div key={i} className="glass-panel h-44 animate-pulse rounded-[2rem]" />
         ))}
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6">
-      {KPI_CONFIG.map((cfg) => {
+    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
+      {KPI_CONFIG.map((cfg, index) => {
         const value = stats?.[cfg.key] ?? 0;
-        const ratio = cfg.showProgress ? (stats?.completionRatio ?? 0) : null;
+        const ratio = cfg.showProgress ? stats?.completionRatio ?? 0 : null;
         const clickable = !!(cfg.filterField && onFilter);
 
         return (
-          <div
+          <button
             key={cfg.key}
-            onClick={
-              clickable
-                ? () => onFilter!(cfg.filterField!, cfg.filterValue!)
-                : undefined
-            }
+            type="button"
+            onClick={clickable ? () => onFilter!(cfg.filterField!, cfg.filterValue!) : undefined}
             className={cn(
-              "glass-panel interactive-spotlight glow-ring lift-card motion-tile stagger-in relative flex min-h-[14rem] flex-col gap-5 overflow-hidden rounded-[1.9rem] p-6",
-              clickable &&
-                "cursor-pointer"
+              "glass-panel interactive-spotlight metric-card motion-tile stagger-in group relative min-h-[12.5rem] rounded-[2rem] p-6 text-left",
+              clickable ? "cursor-pointer" : "cursor-default"
             )}
             onPointerMove={trackPointerGlow}
             onPointerLeave={clearPointerGlow}
-            style={{ animationDelay: `${KPI_CONFIG.indexOf(cfg) * 80}ms` }}
+            style={{ animationDelay: `${index * 70}ms` }}
           >
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-br from-white/70 to-transparent" />
-            <div
-              className={cn(
-                "relative flex h-12 w-12 items-center justify-center rounded-[1.15rem] shadow-sm",
-                "motion-icon",
-                cfg.colorClass
+            <div className="flex items-start justify-between gap-4">
+              <div className={cn("motion-icon flex h-12 w-12 items-center justify-center rounded-[1rem] shadow-[0_12px_30px_rgba(2,6,23,0.18)]", cfg.colorClass)}>
+                <cfg.icon className="h-5 w-5 stroke-[2.2]" />
+              </div>
+              {clickable ? (
+                <span className="theme-subtle text-[11px] uppercase tracking-[0.24em]">Explore</span>
+              ) : (
+                <span className="theme-subtle text-[11px] uppercase tracking-[0.24em]">Summary</span>
               )}
-            >
-              <cfg.icon className="h-[1.15rem] w-[1.15rem] stroke-[2.25]" />
             </div>
 
-            <div className="space-y-2">
-              <div className="theme-subtle text-xs font-medium uppercase tracking-[0.2em]">
-                {cfg.label}
-              </div>
-              <div className="theme-heading text-4xl font-bold tracking-tight tabular-nums">
-                {typeof value === "number" ? value.toLocaleString() : value}
-              </div>
-              <div className="theme-body text-sm leading-6">{cfg.sub}</div>
+            <div className="mt-8">
+              <div className="section-label">{cfg.label}</div>
+              <div className="theme-heading mt-3 text-5xl font-semibold tracking-tight tabular-nums">{typeof value === "number" ? value.toLocaleString() : value}</div>
+              <div className="theme-body mt-3 text-sm leading-6">{cfg.sub}</div>
             </div>
 
-            {ratio !== null && (
-              <div className="mt-auto space-y-2">
-                <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+            {ratio !== null ? (
+              <div className="mt-6 space-y-3">
+                <div className="h-2 overflow-hidden rounded-full bg-white/12">
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-green-600 transition-all duration-700"
+                    className="h-full rounded-full bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-300"
                     style={{ width: `${Math.min(ratio, 100)}%` }}
                   />
                 </div>
-                <div className="theme-subtle text-[10px] uppercase tracking-[0.18em]">{ratio}% completion</div>
+                <div className="theme-subtle text-xs uppercase tracking-[0.18em]">{ratio}% completion</div>
               </div>
-            )}
-          </div>
+            ) : null}
+          </button>
         );
       })}
     </div>

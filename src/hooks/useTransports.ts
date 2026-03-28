@@ -31,6 +31,8 @@ export function useTransports() {
     queryKey: transportKeys.dashboard,
     queryFn: () => apiFetch<TransportListResponse>("/api/transports"),
     staleTime: 30_000,
+    refetchInterval: 20_000,
+    refetchOnWindowFocus: true,
   });
 }
 
