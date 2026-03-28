@@ -2,7 +2,7 @@
 "use client";
 
 import { DashboardStats } from "@/types";
-import { cn } from "@/lib/utils";
+import { clearPointerGlow, cn, trackPointerGlow } from "@/lib/utils";
 import {
   LayoutGrid,
   Clock,
@@ -29,14 +29,14 @@ const KPI_CONFIG: KpiConfig[] = [
     label: "Total Requests",
     sub: "All records",
     icon: LayoutGrid,
-    colorClass: "bg-blue-50 text-blue-600",
+    colorClass: "border border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-400/30 dark:bg-blue-500/16 dark:text-blue-100",
   },
   {
     key: "open",
     label: "Open",
     sub: "Awaiting action",
     icon: Clock,
-    colorClass: "bg-amber-50 text-amber-600",
+    colorClass: "border border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-400/30 dark:bg-amber-500/16 dark:text-amber-100",
     filterField: "status",
     filterValue: "Open",
   },
@@ -45,7 +45,7 @@ const KPI_CONFIG: KpiConfig[] = [
     label: "Closed",
     sub: "Completed",
     icon: CheckCircle2,
-    colorClass: "bg-green-50 text-green-600",
+    colorClass: "border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-400/30 dark:bg-emerald-500/16 dark:text-emerald-100",
     filterField: "status",
     filterValue: "Closed",
     showProgress: true,
@@ -55,7 +55,7 @@ const KPI_CONFIG: KpiConfig[] = [
     label: "Development",
     sub: "Dev type requests",
     icon: Code2,
-    colorClass: "bg-violet-50 text-violet-600",
+    colorClass: "border border-violet-200 bg-violet-50 text-violet-700 dark:border-violet-400/30 dark:bg-violet-500/16 dark:text-violet-100",
     filterField: "typeOfRequest",
     filterValue: "Development",
   },
@@ -64,7 +64,7 @@ const KPI_CONFIG: KpiConfig[] = [
     label: "Configuration",
     sub: "Config type requests",
     icon: Settings2,
-    colorClass: "bg-cyan-50 text-cyan-600",
+    colorClass: "border border-cyan-200 bg-cyan-50 text-cyan-700 dark:border-cyan-400/30 dark:bg-cyan-500/16 dark:text-cyan-100",
     filterField: "typeOfRequest",
     filterValue: "Configuration",
   },
@@ -73,7 +73,7 @@ const KPI_CONFIG: KpiConfig[] = [
     label: "Pending Docs",
     sub: "Missing document links",
     icon: FileWarning,
-    colorClass: "bg-red-50 text-red-600",
+    colorClass: "border border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-400/30 dark:bg-rose-500/16 dark:text-rose-100",
   },
 ];
 
@@ -86,11 +86,11 @@ interface KpiGridProps {
 export function KpiGrid({ stats, isLoading, onFilter }: KpiGridProps) {
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6">
         {Array.from({ length: 6 }).map((_, i) => (
           <div
             key={i}
-            className="glass-panel h-36 animate-pulse rounded-[1.75rem]"
+            className="glass-panel h-44 animate-pulse rounded-[1.9rem]"
           />
         ))}
       </div>
@@ -98,7 +98,7 @@ export function KpiGrid({ stats, isLoading, onFilter }: KpiGridProps) {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
+    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6">
       {KPI_CONFIG.map((cfg) => {
         const value = stats?.[cfg.key] ?? 0;
         const ratio = cfg.showProgress ? (stats?.completionRatio ?? 0) : null;
@@ -113,30 +113,33 @@ export function KpiGrid({ stats, isLoading, onFilter }: KpiGridProps) {
                 : undefined
             }
             className={cn(
-              "glass-panel glow-ring lift-card motion-tile stagger-in relative flex min-h-[9.5rem] flex-col gap-4 overflow-hidden rounded-[1.75rem] p-4",
+              "glass-panel interactive-spotlight glow-ring lift-card motion-tile stagger-in relative flex min-h-[14rem] flex-col gap-5 overflow-hidden rounded-[1.9rem] p-6",
               clickable &&
                 "cursor-pointer"
             )}
+            onPointerMove={trackPointerGlow}
+            onPointerLeave={clearPointerGlow}
             style={{ animationDelay: `${KPI_CONFIG.indexOf(cfg) * 80}ms` }}
           >
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-br from-white/70 to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-br from-white/70 to-transparent" />
             <div
               className={cn(
-                "relative flex h-11 w-11 items-center justify-center rounded-2xl shadow-sm",
+                "relative flex h-12 w-12 items-center justify-center rounded-[1.15rem] shadow-sm",
+                "motion-icon",
                 cfg.colorClass
               )}
             >
-              <cfg.icon className="motion-icon h-4 w-4 rounded-2xl p-0" />
+              <cfg.icon className="h-[1.15rem] w-[1.15rem] stroke-[2.25]" />
             </div>
 
-            <div className="space-y-1">
-              <div className="theme-subtle text-[11px] font-medium uppercase tracking-[0.18em]">
+            <div className="space-y-2">
+              <div className="theme-subtle text-xs font-medium uppercase tracking-[0.2em]">
                 {cfg.label}
               </div>
-              <div className="theme-heading text-3xl font-bold tracking-tight tabular-nums">
+              <div className="theme-heading text-4xl font-bold tracking-tight tabular-nums">
                 {typeof value === "number" ? value.toLocaleString() : value}
               </div>
-              <div className="theme-body text-[11px]">{cfg.sub}</div>
+              <div className="theme-body text-sm leading-6">{cfg.sub}</div>
             </div>
 
             {ratio !== null && (

@@ -4,10 +4,9 @@
 import { useState, useCallback } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
-import { Menu, Search, RefreshCw, Moon, Sun, Palette, LogOut } from "lucide-react";
+import { Menu, Search, RefreshCw, LogOut, SlidersHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
-import { useTheme, type ThemeName } from "@/components/ThemeProvider";
 import { signOut, useSession } from "next-auth/react";
 
 const PAGE_META: Record<string, { title: string; sub: string }> = {
@@ -31,6 +30,10 @@ const PAGE_META: Record<string, { title: string; sub: string }> = {
     title: "TRMS",
     sub: "Transport Request Management System control plane",
   },
+  "/settings": {
+    title: "Settings",
+    sub: "Theme preferences, visual mode, and workspace behavior",
+  },
 };
 
 interface TopbarProps {
@@ -42,24 +45,8 @@ export function Topbar({ onMenuClick }: TopbarProps) {
   const router = useRouter();
   const qc = useQueryClient();
   const { data: session } = useSession();
-  const { theme, mode, setTheme, toggleMode } = useTheme();
   const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState("");
-  const [themeMenuOpen, setThemeMenuOpen] = useState(false);
-
-  const themes: Array<{ value: ThemeName; label: string; swatch: string; note: string }> = [
-    { value: "harbor", label: "Harbor", swatch: "from-teal-500 via-cyan-500 to-amber-400", note: "Clean executive default" },
-    { value: "graphite", label: "Graphite", swatch: "from-slate-900 via-orange-500 to-red-500", note: "Bold operational contrast" },
-    { value: "ember", label: "Ember", swatch: "from-rose-500 via-amber-400 to-violet-600", note: "Warm high-energy look" },
-    { value: "sap", label: "SAP", swatch: "from-sky-500 via-blue-600 to-slate-900", note: "Familiar enterprise palette" },
-    { value: "ui5", label: "UI5", swatch: "from-blue-500 via-sky-400 to-indigo-700", note: "Bright platform styling" },
-    { value: "cayman", label: "Cayman", swatch: "from-emerald-400 via-teal-500 to-blue-500", note: "GitHub Pages inspired" },
-    { value: "minimal", label: "Minimal", swatch: "from-zinc-900 via-zinc-500 to-stone-300", note: "Quiet editorial layout" },
-    { value: "hacker", label: "Hacker", swatch: "from-lime-400 via-green-500 to-emerald-300", note: "Terminal-inspired dark mode" },
-    { value: "architect", label: "Architect", swatch: "from-orange-500 via-amber-500 to-yellow-400", note: "Warm structural contrast" },
-    { value: "midnight", label: "Midnight", swatch: "from-violet-500 via-indigo-500 to-blue-500", note: "Deep dark release board" },
-    { value: "slate", label: "Slate", swatch: "from-sky-500 via-slate-500 to-slate-700", note: "Cool steel enterprise tone" },
-  ];
 
   // Find best matching meta entry
   let meta = PAGE_META[pathname];
@@ -89,7 +76,7 @@ export function Topbar({ onMenuClick }: TopbarProps) {
   );
 
   return (
-    <header className="glass-panel relative z-10 mx-4 mt-4 flex h-16 flex-shrink-0 items-center gap-4 rounded-3xl border-white/40 px-4 md:mx-6 md:px-6">
+    <header className="glass-panel relative z-10 mx-4 mt-4 flex h-[4.75rem] flex-shrink-0 items-center gap-4 rounded-[2rem] border-white/40 px-5 md:mx-6 md:px-7">
       {/* Mobile hamburger */}
       <button
         className="theme-text-muted hover:text-foreground lg:hidden"
@@ -100,11 +87,11 @@ export function Topbar({ onMenuClick }: TopbarProps) {
 
       {/* Page title */}
       <div className="min-w-0 flex-1">
-        <h1 className="truncate text-base font-semibold leading-tight text-foreground">
+        <h1 className="truncate text-xl font-semibold leading-tight text-foreground">
           {meta.title}
         </h1>
         {meta.sub && (
-          <p className="theme-text-muted hidden truncate text-xs leading-tight sm:block">
+          <p className="theme-text-muted hidden truncate pt-0.5 text-sm leading-tight sm:block">
             {meta.sub}
           </p>
         )}
@@ -115,60 +102,24 @@ export function Topbar({ onMenuClick }: TopbarProps) {
         <div className="relative">
           <button
             type="button"
-            onClick={() => setThemeMenuOpen((open) => !open)}
-            className="surface-panel-strong theme-text-muted flex h-10 items-center gap-2 rounded-2xl px-3 text-xs font-medium transition-colors hover:text-foreground"
+            onClick={() => router.push("/settings")}
+            className="surface-panel-strong theme-text-muted flex h-11 items-center gap-2 rounded-2xl px-4 text-sm font-medium transition-colors hover:text-foreground"
           >
-            <Palette className="h-3.5 w-3.5" />
-            {themes.find((item) => item.value === theme)?.label}
+            <SlidersHorizontal className="h-3.5 w-3.5" />
+            Settings
           </button>
-          {themeMenuOpen && (
-            <div className="glass-panel absolute right-0 top-12 z-50 w-64 rounded-3xl p-2 shadow-2xl">
-              {themes.map((item) => (
-                <button
-                  key={item.value}
-                  type="button"
-                  onClick={() => {
-                    setTheme(item.value);
-                    setThemeMenuOpen(false);
-                  }}
-                  className={cn(
-                    "flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left text-xs transition-colors",
-                    theme === item.value
-                      ? "bg-primary text-primary-foreground"
-                      : "theme-text-muted hover:bg-accent hover:text-accent-foreground"
-                  )}
-                >
-                  <span className={cn("h-8 w-8 rounded-2xl bg-gradient-to-br", item.swatch)} />
-                  <span className="flex-1">
-                    <span className="block font-semibold">{item.label}</span>
-                    <span className="block text-[11px] opacity-75">{item.note}</span>
-                  </span>
-                  {theme === item.value && <span className="text-[11px]">Active</span>}
-                </button>
-              ))}
-            </div>
-          )}
         </div>
-
-        <button
-          type="button"
-          onClick={toggleMode}
-          className="surface-panel-strong theme-text-muted flex h-10 w-10 items-center justify-center rounded-2xl transition-colors hover:text-foreground"
-          title={mode === "light" ? "Switch to dark mode" : "Switch to light mode"}
-        >
-          {mode === "light" ? <Moon className="h-3.5 w-3.5" /> : <Sun className="h-3.5 w-3.5" />}
-        </button>
 
         {/* Global quick search */}
         <form onSubmit={handleSearch} className="hidden md:block">
           <div className="relative">
-            <Search className="theme-text-soft pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2" />
+            <Search className="theme-text-soft pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Quick search…"
-              className="theme-field h-10 w-56 rounded-2xl border pl-8 pr-3 text-xs shadow-inner transition-all focus:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="theme-field h-11 w-64 rounded-2xl border pl-10 pr-4 text-sm shadow-inner transition-all focus:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
           </div>
         </form>
@@ -178,20 +129,18 @@ export function Topbar({ onMenuClick }: TopbarProps) {
           onClick={handleRefresh}
           disabled={refreshing}
           title="Refresh data"
-          className="surface-panel-strong theme-text-muted flex h-10 w-10 items-center justify-center rounded-2xl transition-colors hover:text-foreground disabled:opacity-50"
+          className="surface-panel-strong theme-text-muted flex h-11 w-11 items-center justify-center rounded-2xl transition-colors hover:text-foreground disabled:opacity-50"
         >
-          <RefreshCw
-            className={cn("h-3.5 w-3.5", refreshing && "animate-spin")}
-          />
+          <RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
         </button>
 
         <button
           type="button"
           onClick={() => signOut({ callbackUrl: "/login" })}
-          className="surface-panel-strong theme-text-muted hidden h-10 items-center gap-2 rounded-2xl px-3 text-xs font-medium transition-colors hover:text-foreground lg:flex"
+          className="surface-panel-strong theme-text-muted hidden h-11 items-center gap-2 rounded-2xl px-4 text-sm font-medium transition-colors hover:text-foreground lg:flex"
           title={session?.user?.email ?? "Sign out"}
         >
-          <LogOut className="h-3.5 w-3.5" />
+          <LogOut className="h-4 w-4" />
           <span className="max-w-40 truncate">{session?.user?.email ?? "Sign out"}</span>
         </button>
       </div>

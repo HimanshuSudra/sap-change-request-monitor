@@ -1,11 +1,13 @@
 import * as React from "react";
-import { cn } from "@/lib/utils";
+import { clearPointerGlow, cn, trackPointerGlow } from "@/lib/utils";
 
 const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn("surface-panel rounded-xl text-card-foreground shadow-sm", className)}
+      className={cn("surface-panel interactive-spotlight rounded-[1.5rem] text-card-foreground shadow-sm", className)}
+      onPointerMove={trackPointerGlow}
+      onPointerLeave={clearPointerGlow}
       {...props}
     />
   )
@@ -14,7 +16,7 @@ Card.displayName = "Card";
 
 const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn("flex flex-col space-y-1.5 p-6", className)} {...props} />
+    <div ref={ref} className={cn("flex flex-col space-y-2 p-7", className)} {...props} />
   )
 );
 CardHeader.displayName = "CardHeader";
@@ -34,7 +36,7 @@ const CardDescription = React.forwardRef<HTMLParagraphElement, React.HTMLAttribu
 CardDescription.displayName = "CardDescription";
 
 const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
+  ({ className, ...props }, ref) => <div ref={ref} className={cn("p-7 pt-0", className)} {...props} />
 );
 CardContent.displayName = "CardContent";
 
