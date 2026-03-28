@@ -53,6 +53,12 @@ export function Topbar({ onMenuClick }: TopbarProps) {
     { value: "ember", label: "Ember", swatch: "from-rose-500 via-amber-400 to-violet-600", note: "Warm high-energy look" },
     { value: "sap", label: "SAP", swatch: "from-sky-500 via-blue-600 to-slate-900", note: "Familiar enterprise palette" },
     { value: "ui5", label: "UI5", swatch: "from-blue-500 via-sky-400 to-indigo-700", note: "Bright platform styling" },
+    { value: "cayman", label: "Cayman", swatch: "from-emerald-400 via-teal-500 to-blue-500", note: "GitHub Pages inspired" },
+    { value: "minimal", label: "Minimal", swatch: "from-zinc-900 via-zinc-500 to-stone-300", note: "Quiet editorial layout" },
+    { value: "hacker", label: "Hacker", swatch: "from-lime-400 via-green-500 to-emerald-300", note: "Terminal-inspired dark mode" },
+    { value: "architect", label: "Architect", swatch: "from-orange-500 via-amber-500 to-yellow-400", note: "Warm structural contrast" },
+    { value: "midnight", label: "Midnight", swatch: "from-violet-500 via-indigo-500 to-blue-500", note: "Deep dark release board" },
+    { value: "slate", label: "Slate", swatch: "from-sky-500 via-slate-500 to-slate-700", note: "Cool steel enterprise tone" },
   ];
 
   // Find best matching meta entry

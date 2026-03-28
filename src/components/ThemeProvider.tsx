@@ -2,7 +2,18 @@
 
 import * as React from "react";
 
-export type ThemeName = "harbor" | "graphite" | "ember" | "sap" | "ui5";
+export type ThemeName =
+  | "harbor"
+  | "graphite"
+  | "ember"
+  | "sap"
+  | "ui5"
+  | "cayman"
+  | "minimal"
+  | "hacker"
+  | "architect"
+  | "midnight"
+  | "slate";
 export type ColorMode = "light" | "dark";
 
 type ThemeContextValue = {
@@ -27,6 +38,12 @@ function normalizeTheme(theme: string | null): ThemeName {
   switch (theme) {
     case "sap":
     case "ui5":
+    case "cayman":
+    case "minimal":
+    case "hacker":
+    case "architect":
+    case "midnight":
+    case "slate":
       return theme;
     case "anime":
       return "ember";

@@ -129,6 +129,167 @@
     --theme-hero-shadow: 0 32px 84px rgba(37, 99, 235, 0.12);
   }
 
+  :root[data-theme="cayman"] {
+    --primary: 171 71% 35%;
+    --ring: 171 71% 35%;
+    --shell-base: #0b2330;
+    --shell-accent: #159a8c;
+    --surface-bg:
+      radial-gradient(circle at 12% 16%, rgba(33, 186, 169, 0.16), transparent 24%),
+      radial-gradient(circle at 85% 12%, rgba(47, 128, 237, 0.16), transparent 22%),
+      linear-gradient(180deg, #f5fffd 0%, #edf7fb 100%);
+    --hero-badge-bg: rgba(220, 252, 246, 0.86);
+    --hero-badge-border: rgba(21, 154, 140, 0.24);
+    --hero-badge-text: rgba(10, 82, 77, 0.94);
+    --theme-gradient: linear-gradient(135deg, #159a8c 0%, #2f80ed 100%);
+    --theme-hero-shadow: 0 32px 84px rgba(21, 154, 140, 0.12);
+  }
+
+  :root[data-theme="minimal"] {
+    --primary: 215 25% 22%;
+    --ring: 215 25% 22%;
+    --shell-base: #111827;
+    --shell-accent: #6b7280;
+    --surface-bg:
+      radial-gradient(circle at 15% 15%, rgba(156, 163, 175, 0.10), transparent 24%),
+      linear-gradient(180deg, #fcfcfb 0%, #f3f4f6 100%);
+    --hero-badge-bg: rgba(243, 244, 246, 0.9);
+    --hero-badge-border: rgba(156, 163, 175, 0.25);
+    --hero-badge-text: rgba(55, 65, 81, 0.94);
+    --panel-bg: rgba(255, 255, 255, 0.95);
+    --panel-bg-strong: rgba(255, 255, 255, 0.99);
+    --panel-border: rgba(209, 213, 219, 0.6);
+    --panel-hover: rgba(249, 250, 251, 0.98);
+    --field-border: rgba(209, 213, 219, 0.7);
+    --theme-gradient: linear-gradient(135deg, #111827 0%, #6b7280 100%);
+    --theme-hero-shadow: 0 24px 60px rgba(17, 24, 39, 0.08);
+  }
+
+  :root[data-theme="hacker"] {
+    --background: 130 20% 7%;
+    --foreground: 120 100% 84%;
+    --card: 132 24% 8%;
+    --card-foreground: 120 100% 84%;
+    --popover: 132 24% 8%;
+    --popover-foreground: 120 100% 84%;
+    --primary: 120 100% 44%;
+    --primary-foreground: 132 24% 8%;
+    --secondary: 132 16% 12%;
+    --secondary-foreground: 120 100% 84%;
+    --muted: 132 16% 12%;
+    --muted-foreground: 120 29% 70%;
+    --accent: 132 16% 12%;
+    --accent-foreground: 120 100% 84%;
+    --border: 120 40% 24%;
+    --input: 120 40% 24%;
+    --ring: 120 100% 44%;
+    --shell-base: #020602;
+    --shell-accent: #22c55e;
+    --surface-bg:
+      radial-gradient(circle at 18% 16%, rgba(34, 197, 94, 0.12), transparent 24%),
+      linear-gradient(180deg, #050805 0%, #081108 100%);
+    --glass-bg: rgba(4, 10, 4, 0.78);
+    --glass-border: rgba(34, 197, 94, 0.16);
+    --grid-line: rgba(34, 197, 94, 0.08);
+    --hero-badge-bg: rgba(5, 16, 7, 0.84);
+    --hero-badge-border: rgba(34, 197, 94, 0.22);
+    --hero-badge-text: rgba(134, 239, 172, 0.94);
+    --panel-bg: rgba(5, 16, 7, 0.84);
+    --panel-bg-strong: rgba(5, 16, 7, 0.96);
+    --panel-border: rgba(34, 197, 94, 0.18);
+    --panel-hover: rgba(9, 22, 10, 0.98);
+    --field-bg: rgba(3, 12, 5, 0.95);
+    --field-border: rgba(34, 197, 94, 0.28);
+    --field-text: rgba(187, 247, 208, 0.96);
+    --field-placeholder: rgba(134, 239, 172, 0.52);
+    --muted-text: rgba(167, 243, 208, 0.9);
+    --soft-text: rgba(134, 239, 172, 0.78);
+    --faint-text: rgba(74, 222, 128, 0.62);
+    --table-header: rgba(5, 16, 7, 0.92);
+    --overlay: rgba(0, 0, 0, 0.72);
+    --theme-gradient: linear-gradient(135deg, #22c55e 0%, #86efac 100%);
+    --theme-hero-shadow: 0 32px 84px rgba(0, 0, 0, 0.42);
+  }
+
+  :root[data-theme="architect"] {
+    --primary: 15 74% 46%;
+    --ring: 15 74% 46%;
+    --shell-base: #24110d;
+    --shell-accent: #ea580c;
+    --surface-bg:
+      radial-gradient(circle at 12% 16%, rgba(234, 88, 12, 0.16), transparent 24%),
+      radial-gradient(circle at 85% 10%, rgba(217, 119, 6, 0.12), transparent 22%),
+      linear-gradient(180deg, #fff9f5 0%, #f8efe6 100%);
+    --hero-badge-bg: rgba(255, 237, 213, 0.86);
+    --hero-badge-border: rgba(234, 88, 12, 0.24);
+    --hero-badge-text: rgba(124, 45, 18, 0.94);
+    --theme-gradient: linear-gradient(135deg, #ea580c 0%, #d97706 100%);
+    --theme-hero-shadow: 0 32px 84px rgba(124, 45, 18, 0.12);
+  }
+
+  :root[data-theme="midnight"] {
+    --background: 223 35% 8%;
+    --foreground: 210 40% 96%;
+    --card: 223 28% 10%;
+    --card-foreground: 210 40% 96%;
+    --popover: 223 28% 10%;
+    --popover-foreground: 210 40% 96%;
+    --primary: 252 83% 67%;
+    --primary-foreground: 255 100% 98%;
+    --secondary: 223 21% 15%;
+    --secondary-foreground: 210 40% 96%;
+    --muted: 223 21% 15%;
+    --muted-foreground: 215 20% 72%;
+    --accent: 223 21% 15%;
+    --accent-foreground: 210 40% 96%;
+    --border: 223 22% 24%;
+    --input: 223 22% 24%;
+    --ring: 252 83% 67%;
+    --shell-base: #0a0820;
+    --shell-accent: #8b5cf6;
+    --surface-bg:
+      radial-gradient(circle at 14% 18%, rgba(139, 92, 246, 0.16), transparent 24%),
+      radial-gradient(circle at 86% 12%, rgba(59, 130, 246, 0.12), transparent 20%),
+      linear-gradient(180deg, #09091b 0%, #12142d 100%);
+    --glass-bg: rgba(13, 18, 41, 0.7);
+    --glass-border: rgba(139, 92, 246, 0.18);
+    --grid-line: rgba(148, 163, 184, 0.08);
+    --hero-badge-bg: rgba(31, 41, 55, 0.72);
+    --hero-badge-border: rgba(139, 92, 246, 0.24);
+    --hero-badge-text: rgba(221, 214, 254, 0.94);
+    --panel-bg: rgba(13, 18, 41, 0.82);
+    --panel-bg-strong: rgba(13, 18, 41, 0.94);
+    --panel-border: rgba(139, 92, 246, 0.16);
+    --panel-hover: rgba(24, 31, 61, 0.96);
+    --field-bg: rgba(10, 14, 30, 0.96);
+    --field-border: rgba(99, 102, 241, 0.28);
+    --field-text: rgba(241, 245, 249, 0.96);
+    --field-placeholder: rgba(191, 219, 254, 0.5);
+    --muted-text: rgba(203, 213, 225, 0.92);
+    --soft-text: rgba(165, 180, 252, 0.82);
+    --faint-text: rgba(129, 140, 248, 0.64);
+    --table-header: rgba(13, 18, 41, 0.92);
+    --overlay: rgba(2, 6, 23, 0.74);
+    --theme-gradient: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+    --theme-hero-shadow: 0 36px 90px rgba(2, 6, 23, 0.42);
+  }
+
+  :root[data-theme="slate"] {
+    --primary: 204 80% 45%;
+    --ring: 204 80% 45%;
+    --shell-base: #1f2937;
+    --shell-accent: #0ea5e9;
+    --surface-bg:
+      radial-gradient(circle at 14% 16%, rgba(14, 165, 233, 0.14), transparent 24%),
+      radial-gradient(circle at 86% 10%, rgba(100, 116, 139, 0.16), transparent 22%),
+      linear-gradient(180deg, #f8fafc 0%, #e9eff4 100%);
+    --hero-badge-bg: rgba(226, 232, 240, 0.84);
+    --hero-badge-border: rgba(14, 165, 233, 0.24);
+    --hero-badge-text: rgba(30, 41, 59, 0.94);
+    --theme-gradient: linear-gradient(135deg, #0ea5e9 0%, #475569 100%);
+    --theme-hero-shadow: 0 32px 84px rgba(30, 41, 59, 0.12);
+  }
+
   :root.dark {
     --background: 222 47% 8%;
     --foreground: 210 40% 96%;
