@@ -7,6 +7,7 @@ import {
 } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { toTransportActionDto, toTransportDto } from "@/lib/utils";
+import { sendProductionApprovalEmail } from "@/services/mail.service";
 import {
   TransportListResponse,
   TransportApprovalResult,
@@ -276,27 +277,6 @@ async function createActionAudit(params: {
   });
 }
 
-function buildApprovalMailToUrl(params: {
-  trNumber: string;
-  description: string | null;
-  owner: string | null;
-}): string {
-  const subject = `Production approval requested for ${params.trNumber}`;
-  const body = [
-    "Hello Himanshu,",
-    "",
-    "A production import approval has been requested from TRMS.",
-    "",
-    `Transport Request: ${params.trNumber}`,
-    `Owner: ${params.owner ?? "Unknown"}`,
-    `Description: ${params.description ?? "No description available"}`,
-    "",
-    "Please review the request in PCMS TRMS and choose Approve or Decline.",
-  ].join("\n");
-
-  return `mailto:${encodeURIComponent(PROD_APPROVER_EMAIL)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-}
-
 async function runMockMove(trNumber: string, target: TargetEnvironment): Promise<TransportMoveResult> {
   const now = new Date();
   const transport = await prisma.transportRequest.findUnique({ where: { trNumber } });
@@ -424,11 +404,7 @@ export async function requestProductionApproval(trNumber: string): Promise<Trans
   }
 
   const now = new Date();
-  const mailToUrl = buildApprovalMailToUrl({
-    trNumber,
-    description: transport.description,
-    owner: transport.owner,
-  });
+  const requestLink = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/trms`;
 
   await prisma.transportRequest.update({
     where: { trNumber },
@@ -444,21 +420,28 @@ export async function requestProductionApproval(trNumber: string): Promise<Trans
     },
   });
 
+  await sendProductionApprovalEmail({
+    to: PROD_APPROVER_EMAIL,
+    trNumber,
+    description: transport.description,
+    owner: transport.owner,
+    requestLink,
+  });
+
   await createActionAudit({
     trNumber,
     actionType: TransportActionType.MOVE_TO_PROD,
     actionStatus: TransportActionStatus.PENDING,
     environment: "PROD",
-    message: `Production approval requested and email prepared for ${PROD_APPROVER_EMAIL}`,
+    message: `Production approval requested and email sent to ${PROD_APPROVER_EMAIL}`,
     requestBody: { trNumber, approver: PROD_APPROVER_EMAIL },
-    responseBody: { mailToUrl, requestedAt: now.toISOString() },
+    responseBody: { requestLink, requestedAt: now.toISOString() },
   });
 
   return {
     trNumber,
     approvalStatus: TransportApprovalStatus.PENDING,
-    message: `Approval request created. Email prepared for ${PROD_APPROVER_EMAIL}.`,
-    mailToUrl,
+    message: `Approval request created. Email sent to ${PROD_APPROVER_EMAIL}.`,
   };
 }
 

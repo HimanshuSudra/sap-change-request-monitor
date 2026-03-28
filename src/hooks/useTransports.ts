@@ -83,9 +83,6 @@ export function useRequestProdApproval() {
     onSuccess: (result) => {
       qc.invalidateQueries({ queryKey: transportKeys.all });
       toast.success(result.message);
-      if (result.mailToUrl) {
-        window.open(result.mailToUrl, "_blank");
-      }
     },
     onError: (err: Error) => {
       toast.error(err.message || "Could not request production approval");
